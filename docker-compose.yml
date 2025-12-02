@@ -24,8 +24,7 @@ services:
         - VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID}
     image: boris-portfolio:latest
     restart: unless-stopped
-    ports:
-      - "8888:80"
+    network_mode: host
     environment:
       - TZ=Europe/Paris
     volumes:
@@ -39,11 +38,8 @@ services:
       - ./uploads:/usr/share/nginx/html/uploads:ro
       # Logs Nginx
       - ./logs:/var/log/nginx
-    networks:
-      - internal
-      - shared-net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
       interval: 30s
       timeout: 10s
       retries: 3
