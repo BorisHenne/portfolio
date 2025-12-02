@@ -119,7 +119,42 @@
     background-size: 50px 50px;
   }
 
-  /* Cyber button */
+  /* Primary Button - Rempli */
+  .btn-primary {
+    @apply relative px-6 py-3 rounded-xl font-semibold overflow-hidden;
+    @apply bg-gradient-to-r from-primary-500 to-primary-400;
+    @apply text-dark-900;
+    @apply transition-all duration-300;
+    @apply hover:shadow-lg hover:shadow-primary-500/30;
+    @apply hover:-translate-y-0.5;
+    @apply active:scale-[0.98];
+  }
+
+  .btn-primary::before {
+    content: '';
+    @apply absolute inset-0 opacity-0;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);
+    transition: opacity 0.3s;
+  }
+
+  .btn-primary:hover::before {
+    @apply opacity-100;
+  }
+
+  /* Secondary Button - Outline */
+  .btn-secondary {
+    @apply relative px-6 py-3 rounded-xl font-semibold;
+    @apply border-2 border-primary-500/50;
+    @apply text-primary-400;
+    @apply bg-primary-500/5;
+    @apply transition-all duration-300;
+    @apply hover:border-primary-500 hover:bg-primary-500/10;
+    @apply hover:shadow-lg hover:shadow-primary-500/20;
+    @apply hover:-translate-y-0.5;
+    @apply active:scale-[0.98];
+  }
+
+  /* Cyber button - Style retro */
   .btn-cyber {
     position: relative;
     padding: 0.75rem 1.5rem;
@@ -149,6 +184,39 @@
   .btn-cyber-filled:hover {
     background: #00cc6e;
     box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+  }
+
+  /* Glass card hover effect ameliore */
+  .glass-card-hover {
+    @apply bg-dark-800/50 border border-primary-500/20;
+    @apply transition-all duration-300;
+    @apply hover:border-primary-500/50;
+    @apply hover:bg-dark-800/70;
+    @apply hover:shadow-lg hover:shadow-primary-500/10;
+    @apply hover:-translate-y-1;
+  }
+
+  /* Glow border animation */
+  .glow-border {
+    position: relative;
+  }
+
+  .glow-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, var(--color-matrix-glow), var(--color-cyber-accent), var(--color-matrix-glow));
+    background-size: 200% 200%;
+    animation: borderGlow 3s linear infinite;
+    z-index: -1;
+    opacity: 0.5;
+  }
+
+  @keyframes borderGlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
   /* Skill bar */
@@ -209,11 +277,91 @@
 
   /* Tag/Badge */
   .tag {
-    @apply px-3 py-1 rounded-full text-xs;
+    @apply px-3 py-1.5 rounded-full text-xs sm:text-sm;
     font-family: 'JetBrains Mono', monospace;
-    background: rgba(0, 255, 136, 0.1);
+    background: rgba(0, 255, 136, 0.08);
     color: var(--color-matrix-glow);
     border: 1px solid rgba(0, 255, 136, 0.2);
+    transition: all 0.2s ease;
+  }
+
+  .tag:hover {
+    background: rgba(0, 255, 136, 0.15);
+    border-color: rgba(0, 255, 136, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 136, 0.15);
+  }
+
+  /* Section title */
+  .section-title {
+    @apply relative inline-block font-display text-2xl sm:text-3xl lg:text-4xl font-bold;
+    @apply text-transparent bg-clip-text;
+    background-image: linear-gradient(135deg, #fff 0%, #a0aec0 100%);
+  }
+
+  .section-title::after {
+    content: '';
+    @apply absolute -bottom-2 left-0 w-full h-1 rounded-full;
+    background: linear-gradient(90deg, var(--color-matrix-glow), var(--color-cyber-accent));
+  }
+
+  /* Card avec effet 3D au hover */
+  .card-3d {
+    @apply relative;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+  }
+
+  .card-3d:hover {
+    transform: perspective(1000px) rotateX(2deg) rotateY(-2deg) translateZ(10px);
+  }
+
+  /* Shimmer effect */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    100% {
+      left: 100%;
+    }
+  }
+
+  /* Underline animation */
+  .underline-animation {
+    position: relative;
+  }
+
+  .underline-animation::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-matrix-glow);
+    transition: width 0.3s ease;
+  }
+
+  .underline-animation:hover::after {
+    width: 100%;
   }
 }
 
@@ -259,6 +407,103 @@
   overflow: hidden;
   white-space: nowrap;
   animation: typing 2s steps(30, end);
+}
+
+/* Fade in up animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Slide in from left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.5s ease-out forwards;
+}
+
+/* Rotate gradient background */
+@keyframes rotateGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: rotateGradient 5s ease infinite;
+}
+
+/* Ripple effect */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+}
+
+.ripple-effect:active::after {
+  animation: ripple 0.6s linear;
+}
+
+/* Glow pulse for status indicator */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+  }
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 2s ease-in-out infinite;
 }
 
 /* ========================================
