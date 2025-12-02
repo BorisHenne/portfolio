@@ -18,7 +18,8 @@ set -e
 
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-INSTALL_DIR="${PORTFOLIO_DIR:-$HOME/portfolio}"
+# Chemin par defaut pour NAS UGreen UGOS
+INSTALL_DIR="${PORTFOLIO_DIR:-/volume1/docker/site-perso}"
 COMPOSE_FILE="docker-compose-nas.yml"
 GITHUB_RAW="https://raw.githubusercontent.com/BorisHenne/portfolio/main"
 

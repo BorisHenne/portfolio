@@ -4,11 +4,13 @@
 # Stack pour NAS UGreen DXP4800+ (UGOS)
 # Auto-update via Watchtower depuis GitHub Container Registry
 #
+# Chemin sur UGOS: /volume1/docker/site-perso/
+#
 # Installation:
-#   1. Copier ce fichier sur le NAS
-#   2. Creer les dossiers: mkdir -p ~/portfolio/{data,logs}
+#   1. Copier ce fichier dans /volume1/docker/site-perso/
+#   2. Creer les dossiers: mkdir -p /volume1/docker/site-perso/{data,logs}
 #   3. Configurer le token Cloudflare (optionnel)
-#   4. Lancer: docker-compose -f docker-compose-nas.yml up -d
+#   4. Lancer: docker compose -f docker-compose-nas.yml up -d
 #
 # ============================================================
 
@@ -115,10 +117,10 @@ networks:
     driver: bridge
 
 # ============================================================
-# STRUCTURE DES DOSSIERS SUR LE NAS
+# STRUCTURE DES DOSSIERS SUR LE NAS UGREEN
 # ============================================================
 #
-# ~/portfolio/
+# /volume1/docker/site-perso/
 # ├── docker-compose-nas.yml   (ce fichier)
 # ├── data/
 # │   ├── cv/
