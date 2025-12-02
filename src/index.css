@@ -420,12 +420,13 @@
   }
 }
 
-/* Mobile styles */
+/* Mobile styles - optimisé pour écrans tactiles */
 @media (max-width: 640px) {
   .glass-card {
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     padding: 1.25rem;
+    border-radius: 1rem;
   }
 
   .btn-cyber {
@@ -435,21 +436,23 @@
 
   .btn-primary,
   .btn-secondary {
-    @apply px-5 py-3 text-base;
-    width: 100%;
-    justify-content: center;
+    @apply text-sm font-semibold;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
   }
 
   .section-title {
-    @apply text-3xl sm:text-4xl mb-4;
+    @apply text-2xl mb-4;
+    letter-spacing: -0.01em;
   }
 
   .section-subtitle {
-    @apply text-base;
+    @apply text-sm leading-relaxed;
   }
 
   .tag {
-    @apply px-3 py-1.5 text-xs;
+    @apply px-2.5 py-1 text-[11px];
+    border-radius: 9999px;
   }
 
   /* Compact skill bars */
@@ -457,9 +460,14 @@
     height: 6px;
   }
 
-  /* Better spacing */
+  /* Better section spacing */
   section {
-    @apply py-12;
+    @apply py-10;
+  }
+
+  /* Safe area padding pour iPhone avec notch */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
   }
 
   /* Swipe-friendly horizontal scroll */
@@ -475,6 +483,17 @@
 
   .scroll-x-touch > * {
     scroll-snap-align: start;
+  }
+
+  /* Glass card hover désactivé sur mobile */
+  .glass-card-hover {
+    transform: none !important;
+  }
+
+  /* Input fields plus grands pour le touch */
+  .input-field {
+    @apply py-3.5 text-base;
+    font-size: 16px; /* Empêche le zoom auto sur iOS */
   }
 }
 

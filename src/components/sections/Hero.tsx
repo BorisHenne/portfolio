@@ -38,6 +38,13 @@ const techTags = [
   'Make.com', 'Docker', 'Home Assistant', 'TypeScript'
 ];
 
+// Mobile-first responsive sizes
+const PROFILE_SIZES = {
+  mobile: 'w-32 h-32',
+  sm: 'sm:w-48 sm:h-48',
+  lg: 'lg:w-64 lg:h-64',
+};
+
 function HeroComponent() {
   const { t } = useTranslation();
   const ref = useRef<HTMLElement>(null);
@@ -163,17 +170,17 @@ function HeroComponent() {
           animate={isInView ? 'visible' : 'hidden'}
           className="flex flex-col lg:flex-row items-center gap-6 sm:gap-12 lg:gap-16"
         >
-          {/* Profile Image */}
-          <motion.div variants={itemVariants} className="relative">
-            <div className="relative w-36 h-36 sm:w-56 sm:h-56 lg:w-72 lg:h-72">
-              {/* Glow effect */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 opacity-20 blur-2xl animate-pulse" />
+          {/* Profile Image - optimisé mobile */}
+          <motion.div variants={itemVariants} className="relative flex-shrink-0">
+            <div className={`relative ${PROFILE_SIZES.mobile} ${PROFILE_SIZES.sm} ${PROFILE_SIZES.lg}`}>
+              {/* Glow effect - réduit sur mobile */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 opacity-15 sm:opacity-20 blur-xl sm:blur-2xl animate-pulse" />
 
               {/* Border ring */}
-              <div className="absolute inset-0 rounded-full border-2 border-primary-500/50 animate-pulse" />
+              <div className="absolute inset-0 rounded-full border-2 border-primary-500/40 sm:border-primary-500/50" />
 
               {/* Image container */}
-              <div className="absolute inset-2 rounded-full overflow-hidden border-4 border-dark-950">
+              <div className="absolute inset-1.5 sm:inset-2 rounded-full overflow-hidden border-2 sm:border-4 border-dark-950">
                 <img
                   src="/profile.jpg"
                   alt="Boris Henné"
@@ -199,109 +206,109 @@ function HeroComponent() {
                 transition={{ duration: 2.5, repeat: Infinity }}
               />
 
-              {/* Status badge */}
+              {/* Status badge - compact sur mobile */}
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.5, type: 'spring' }}
-                className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 px-2.5 py-1 sm:px-4 sm:py-2 rounded-full bg-dark-900 border border-red-500/30 shadow-lg"
+                className="absolute -bottom-0.5 -right-0.5 sm:-bottom-2 sm:-right-2 px-2 py-0.5 sm:px-3 sm:py-1.5 rounded-full bg-dark-900/95 backdrop-blur-sm border border-red-500/40 shadow-lg shadow-red-500/10"
               >
-                <span className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium">
-                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 animate-pulse" />
-                  <span className="text-red-400">En contrat</span>
+                <span className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-sm shadow-red-500" />
+                  <span className="text-red-400 uppercase tracking-wide">{t('hero.status')}</span>
                 </span>
               </motion.div>
             </div>
           </motion.div>
 
-          {/* Content */}
-          <div className="flex-1 text-center lg:text-left">
+          {/* Content - typographie améliorée mobile */}
+          <div className="flex-1 text-center lg:text-left max-w-2xl">
             <motion.p
               variants={itemVariants}
-              className="text-primary-400 font-mono text-xs sm:text-sm mb-1 sm:mb-2"
+              className="text-primary-400 font-mono text-xs sm:text-sm mb-2 sm:mb-3"
             >
-              {'>'} {t('hero.greeting')}
+              <span className="opacity-60">{'>'}</span> {t('hero.greeting')}
             </motion.p>
 
             <motion.h1
               variants={itemVariants}
-              className="font-display text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-2 sm:mb-3"
+              className="font-display text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-2 sm:mb-3 tracking-tight"
             >
               {t('hero.name')}
             </motion.h1>
 
             <motion.h2
               variants={itemVariants}
-              className="text-lg sm:text-xl lg:text-2xl font-medium text-gradient mb-2 sm:mb-3"
+              className="text-base sm:text-xl lg:text-2xl font-semibold text-gradient mb-2 sm:mb-3 leading-tight"
             >
               {t('hero.title')}
             </motion.h2>
 
             <motion.p
               variants={itemVariants}
-              className="text-gray-400 text-sm sm:text-base lg:text-lg mb-3 sm:mb-4"
+              className="text-gray-400 text-sm sm:text-base lg:text-lg mb-4 sm:mb-5 leading-relaxed"
             >
               {t('hero.subtitle')}
             </motion.p>
 
             <motion.div
               variants={itemVariants}
-              className="flex items-center justify-center lg:justify-start gap-2 text-gray-500 mb-4 sm:mb-6"
+              className="inline-flex items-center gap-1.5 sm:gap-2 text-gray-400 mb-5 sm:mb-6 px-3 py-1.5 rounded-full bg-dark-800/50 border border-gray-700/30"
             >
-              <MapPin size={16} className="text-primary-500" />
+              <MapPin size={14} className="text-primary-500 sm:w-4 sm:h-4" />
               <span className="font-mono text-xs sm:text-sm">{t('hero.location')}</span>
             </motion.div>
 
-            {/* CTA Buttons + Social in one row on mobile */}
+            {/* CTA Buttons - grid mobile, flex desktop */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-4 sm:mb-6"
+              className="grid grid-cols-2 sm:flex sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-2.5 sm:gap-4 mb-5 sm:mb-6"
             >
               <button
                 onClick={handleContactClick}
-                className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center"
+                className="btn-primary flex items-center gap-2 justify-center text-sm sm:text-base py-3 sm:py-4 px-4 sm:px-8 touch-manipulation"
               >
-                <Mail size={18} />
-                {t('hero.cta')}
+                <Mail size={16} className="sm:w-[18px] sm:h-[18px]" />
+                <span>{t('hero.cta')}</span>
               </button>
               <button
                 onClick={handleCVDownload}
-                className="btn-secondary flex items-center gap-2 w-full sm:w-auto justify-center"
+                className="btn-secondary flex items-center gap-2 justify-center text-sm sm:text-base py-3 sm:py-4 px-4 sm:px-8 touch-manipulation"
               >
-                <Download size={18} />
-                {t('hero.cv')}
+                <Download size={16} className="sm:w-[18px] sm:h-[18px]" />
+                <span>{t('hero.cv')}</span>
               </button>
             </motion.div>
 
-            {/* Social Links - inline on mobile */}
+            {/* Social Links + Tech tags - combined row on mobile */}
             <motion.div
               variants={itemVariants}
-              className="flex items-center justify-center lg:justify-start gap-3 mb-4 sm:mb-6"
+              className="flex items-center justify-center lg:justify-start gap-2 sm:gap-3 mb-5 sm:mb-6"
             >
               <a
                 href="https://www.linkedin.com/in/borishenne/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 sm:p-3 rounded-xl glass-card-hover text-gray-400 hover:text-primary-400 active:text-primary-400 transition-all"
+                className="p-2.5 sm:p-3 rounded-xl bg-dark-800/60 border border-gray-700/40 text-gray-400 hover:text-primary-400 hover:border-primary-500/40 active:text-primary-400 transition-all touch-manipulation"
                 aria-label="LinkedIn"
               >
-                <Linkedin size={20} />
+                <Linkedin size={18} className="sm:w-5 sm:h-5" />
               </a>
               <a
                 href="https://github.com/BorisHenne"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 sm:p-3 rounded-xl glass-card-hover text-gray-400 hover:text-primary-400 active:text-primary-400 transition-all"
+                className="p-2.5 sm:p-3 rounded-xl bg-dark-800/60 border border-gray-700/40 text-gray-400 hover:text-primary-400 hover:border-primary-500/40 active:text-primary-400 transition-all touch-manipulation"
                 aria-label="GitHub"
               >
-                <Github size={20} />
+                <Github size={18} className="sm:w-5 sm:h-5" />
               </a>
             </motion.div>
 
-            {/* Tech tags - horizontal scroll on mobile */}
+            {/* Tech tags - wrap with gap, no scroll */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-wrap justify-center lg:justify-start gap-1.5 sm:gap-2 max-w-full overflow-x-auto pb-2 scroll-x-touch"
+              className="flex flex-wrap justify-center lg:justify-start gap-1.5 sm:gap-2"
             >
               {techTags.map((tag, index) => (
                 <motion.span
@@ -309,7 +316,7 @@ function HeroComponent() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={isInView ? { opacity: 1, scale: 1 } : {}}
                   transition={{ delay: 0.5 + index * 0.03 }}
-                  className="tag whitespace-nowrap"
+                  className="px-2.5 py-1 sm:px-4 sm:py-2 rounded-full text-[11px] sm:text-sm font-mono bg-primary-500/10 text-primary-400 border border-primary-500/20 whitespace-nowrap"
                 >
                   {tag}
                 </motion.span>

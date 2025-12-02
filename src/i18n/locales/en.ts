@@ -17,6 +17,7 @@ export default {
     location: 'Thionville, Grand Est, France',
     cta: 'Contact me',
     cv: 'Download CV',
+    status: 'Under contract',
   },
 
   // About Section
