@@ -257,12 +257,12 @@ function CareerComponent() {
               transition={{ duration: 0.3 }}
             >
               {/* 42 Mindset highlight */}
-              <div className="glass-card rounded-xl sm:rounded-2xl p-6 sm:p-8 lg:p-10 mb-8 sm:mb-12 border-primary-500/30 max-w-4xl mx-auto">
-                <div className="flex flex-col sm:flex-row gap-5 sm:gap-8">
+              <div className="glass-card rounded-xl sm:rounded-2xl p-5 sm:p-8 mb-8 sm:mb-10 border-primary-500/20 bg-gradient-to-br from-primary-500/5 to-transparent max-w-4xl mx-auto">
+                <div className="flex flex-col sm:flex-row gap-5 sm:gap-8 items-center">
                   {/* 42 Logo */}
-                  <div className="flex-shrink-0 flex items-center justify-center">
-                    <div className="w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center border border-primary-500/30">
-                      <span className="text-4xl sm:text-5xl lg:text-6xl font-bold text-primary-400 font-mono">
+                  <div className="flex-shrink-0">
+                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-primary-500/10 border-2 border-primary-500/30 flex items-center justify-center shadow-lg shadow-primary-500/10">
+                      <span className="text-5xl sm:text-6xl font-bold text-primary-400 font-mono">
                         42
                       </span>
                     </div>
@@ -270,22 +270,22 @@ function CareerComponent() {
 
                   {/* Content */}
                   <div className="flex-1 text-center sm:text-left">
-                    <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3 sm:mb-4 font-display">
+                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2 sm:mb-3 font-display">
                       {t('education.school42Mindset.title')}
                     </h3>
-                    <p className="text-gray-400 text-base sm:text-lg lg:text-xl leading-relaxed mb-5 sm:mb-6">
+                    <p className="text-gray-400 text-sm sm:text-base leading-relaxed mb-4 sm:mb-5">
                       {t('education.school42Mindset.description')}
                     </p>
 
                     {/* Values grid */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
                       {mindsetValues.map(({ key, icon: Icon }) => (
                         <div
                           key={key}
-                          className="flex items-center gap-2 p-3 sm:p-4 rounded-xl bg-dark-900/50 border border-dark-700"
+                          className="flex items-center gap-2 p-2.5 sm:p-3 rounded-lg bg-dark-900/60 border border-dark-700/50 hover:border-primary-500/30 transition-colors"
                         >
-                          <Icon size={20} className="text-primary-400 flex-shrink-0" />
-                          <span className="text-sm sm:text-base text-gray-300">
+                          <Icon size={18} className="text-primary-400 flex-shrink-0" />
+                          <span className="text-xs sm:text-sm text-gray-300">
                             {t(`education.school42Mindset.values.${key}`)}
                           </span>
                         </div>
@@ -296,7 +296,7 @@ function CareerComponent() {
               </div>
 
               {/* Schools grid */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
                 {schools.map((school, index) => (
                   <motion.div
                     key={school.id}
@@ -304,43 +304,41 @@ function CareerComponent() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     className={cn(
-                      'glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6',
-                      school.highlight && 'border-primary-500/30'
+                      'glass-card rounded-xl p-4 sm:p-5 hover:border-primary-500/30 transition-all group',
+                      school.highlight && 'border-primary-500/30 bg-primary-500/5'
                     )}
                   >
                     {/* Icon */}
                     <div
                       className={cn(
-                        'w-12 h-12 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center mb-3 sm:mb-4',
+                        'w-14 h-14 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center mb-4 border transition-all',
                         school.highlight
-                          ? 'bg-gradient-to-br from-primary-500/20 to-secondary-500/20 border border-primary-500/30'
-                          : 'bg-dark-800'
+                          ? 'bg-primary-500/15 border-primary-500/40'
+                          : 'bg-dark-800/80 border-dark-700 group-hover:border-primary-500/30 group-hover:bg-primary-500/10'
                       )}
                     >
-                      {school.icon === '42' ? (
-                        <span className="text-xl sm:text-2xl font-bold text-primary-400 font-mono">
-                          42
-                        </span>
-                      ) : (
-                        <span className="text-xs sm:text-sm font-bold text-gray-400 font-mono">
-                          {school.icon}
-                        </span>
-                      )}
+                      <span className={cn(
+                        'font-bold font-mono transition-colors',
+                        school.icon === '42' ? 'text-2xl sm:text-3xl' : 'text-sm sm:text-base',
+                        school.highlight ? 'text-primary-400' : 'text-gray-400 group-hover:text-primary-400'
+                      )}>
+                        {school.icon}
+                      </span>
                     </div>
 
                     {/* School name */}
-                    <h4 className="text-base sm:text-lg lg:text-xl font-semibold text-white mb-1">
+                    <h4 className="text-sm sm:text-base lg:text-lg font-semibold text-white mb-1 leading-tight">
                       {t(`education.schools.${school.id}.name`)}
                     </h4>
 
                     {/* Degree */}
-                    <p className="text-primary-400 text-sm sm:text-base font-medium mb-2">
+                    <p className="text-primary-400 text-xs sm:text-sm font-medium mb-3">
                       {t(`education.schools.${school.id}.degree`)}
                     </p>
 
                     {/* Period */}
-                    <div className="flex items-center gap-1.5 text-gray-500 text-sm sm:text-base">
-                      <Calendar size={16} />
+                    <div className="flex items-center gap-1.5 text-gray-500 text-xs sm:text-sm">
+                      <Calendar size={14} />
                       <span>{t(`education.schools.${school.id}.period`)}</span>
                     </div>
                   </motion.div>
