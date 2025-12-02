@@ -21,8 +21,8 @@ print_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 # Configuration
 INSTALL_DIR="/volume1/docker/site-perso"
-REPO_URL="https://github.com/BorisHenne/portfolio/archive/refs/heads/claude/cleanup-old-sources-01CA6edyAFw3ELST9QQPKAyp.tar.gz"
-GOOGLE_CLIENT_ID="917185482380-gslbd3g4b66se53d5flrisj6lk5fidl5.apps.googleusercontent.com"
+REPO_URL="https://github.com/BorisHenne/portfolio/archive/refs/heads/main.tar.gz"
+GOOGLE_CLIENT_ID="${VITE_GOOGLE_CLIENT_ID:-}"  # Set via environment variable
 
 echo ""
 echo -e "${GREEN}╔════════════════════════════════════════════════════════╗${NC}"
@@ -74,6 +74,10 @@ fi
 
 # 5. Créer le fichier .env
 print_step "Configuration de l'environnement..."
+if [ -z "$GOOGLE_CLIENT_ID" ]; then
+    print_warning "VITE_GOOGLE_CLIENT_ID non défini - OAuth admin désactivé"
+    print_warning "Pour activer: export VITE_GOOGLE_CLIENT_ID='votre-client-id'"
+fi
 cat > .env << EOF
 VITE_GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
 VITE_ADMIN_EMAIL=boris.henne@gmail.com
