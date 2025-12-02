@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react';
+import { memo, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, useInView } from 'framer-motion';
 import {
@@ -10,7 +10,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 
-import { cn, scrollToElement, downloadFile } from '../../utils';
+import { scrollToElement, downloadFile } from '../../utils';
 
 // Animation variants
 const containerVariants = {
@@ -41,7 +41,93 @@ const techTags = [
 function HeroComponent() {
   const { t } = useTranslation();
   const ref = useRef<HTMLElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+
+  // Particle animation
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let particles: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      size: number;
+    }> = [];
+
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Create particles
+    const createParticles = () => {
+      particles = [];
+      const particleCount = Math.min(50, Math.floor(window.innerWidth / 20));
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          size: Math.random() * 2 + 1,
+        });
+      }
+    };
+
+    createParticles();
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach((particle, i) => {
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+
+        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
+        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0, 255, 136, 0.5)';
+        ctx.fill();
+
+        // Draw connections
+        particles.slice(i + 1).forEach((p2) => {
+          const dx = particle.x - p2.x;
+          const dy = particle.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 150) {
+            ctx.beginPath();
+            ctx.moveTo(particle.x, particle.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(0, 255, 136, ${0.15 * (1 - dist / 150)})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        });
+      });
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
 
   const handleContactClick = () => {
     scrollToElement('contact');
@@ -55,9 +141,22 @@ function HeroComponent() {
     <section
       ref={ref}
       id="home"
-      className="relative min-h-screen flex items-center justify-center pt-16 lg:pt-20"
+      className="relative min-h-screen flex items-center justify-center pt-16 lg:pt-20 overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+      {/* Particle Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 z-0"
+        style={{ opacity: 0.6 }}
+      />
+
+      {/* Grid Background */}
+      <div className="absolute inset-0 bg-grid opacity-50" />
+
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-transparent to-dark-950" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -68,19 +167,38 @@ function HeroComponent() {
           <motion.div variants={itemVariants} className="relative">
             <div className="relative w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80">
               {/* Glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full blur-2xl opacity-30 animate-pulse" />
-              
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 opacity-20 blur-2xl animate-pulse" />
+
+              {/* Border ring */}
+              <div className="absolute inset-0 rounded-full border-2 border-primary-500/50 animate-pulse" />
+
               {/* Image container */}
-              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-primary-500/30 glow-border">
+              <div className="absolute inset-2 rounded-full overflow-hidden border-4 border-dark-950">
                 <img
                   src="/profile.jpg"
                   alt="Boris Henné"
                   className="w-full h-full object-cover"
                   loading="eager"
                   decoding="async"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%230a0f0d" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%2300ff88" font-size="32" font-family="monospace">BH</text></svg>';
+                  }}
                 />
               </div>
-              
+
+              {/* Decorative elements */}
+              <motion.div
+                className="absolute -top-4 -right-4 w-8 h-8 border-2 border-primary-500 rounded-full"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+              <motion.div
+                className="absolute -bottom-2 -left-2 w-6 h-6 bg-primary-500/30 rounded-full"
+                animate={{ scale: [1, 1.3, 1] }}
+                transition={{ duration: 2.5, repeat: Infinity }}
+              />
+
               {/* Status badge */}
               <motion.div
                 initial={{ scale: 0 }}
@@ -102,7 +220,7 @@ function HeroComponent() {
               variants={itemVariants}
               className="text-primary-400 font-mono text-sm sm:text-base mb-2"
             >
-              {t('hero.greeting')}
+              {'>'} {t('hero.greeting')}
             </motion.p>
 
             <motion.h1
@@ -131,7 +249,7 @@ function HeroComponent() {
               className="flex items-center justify-center lg:justify-start gap-2 text-gray-500 mb-8"
             >
               <MapPin size={18} className="text-primary-500" />
-              <span>{t('hero.location')}</span>
+              <span className="font-mono text-sm">{t('hero.location')}</span>
             </motion.div>
 
             {/* CTA Buttons */}
@@ -164,7 +282,7 @@ function HeroComponent() {
                 href="https://www.linkedin.com/in/borishenne/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-xl glass-card-hover text-gray-400 hover:text-primary-400"
+                className="p-3 rounded-xl glass-card-hover text-gray-400 hover:text-primary-400 transition-all hover:scale-110"
                 aria-label="LinkedIn"
               >
                 <Linkedin size={22} />
@@ -173,7 +291,7 @@ function HeroComponent() {
                 href="https://github.com/BorisHenne"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-xl glass-card-hover text-gray-400 hover:text-primary-400"
+                className="p-3 rounded-xl glass-card-hover text-gray-400 hover:text-primary-400 transition-all hover:scale-110"
                 aria-label="GitHub"
               >
                 <Github size={22} />
