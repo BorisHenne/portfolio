@@ -1,0 +1,14 @@
+# Portfolio Boris Henné
+# https://boris-henne.fr
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://boris-henne.fr/sitemap.xml
+
+# Disallow admin
+Disallow: /admin/
+
+# Cache
+# Assets are cached with long expiration

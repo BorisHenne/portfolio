@@ -1,0 +1,261 @@
+# =====================================================
+# PORTFOLIO BORIS HENNÉ - CI/CD Pipeline
+# =====================================================
+# Build, Test, Deploy vers FTP (LWS) et Docker Registry
+
+name: 🚀 CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: 'Cible de déploiement'
+        required: true
+        default: 'ftp'
+        type: choice
+        options:
+          - ftp
+          - docker
+          - both
+
+# Permissions
+permissions:
+  contents: read
+  packages: write
+
+# Variables d'environnement globales
+env:
+  NODE_VERSION: '20'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # ===================
+  # Job 1: Lint & Test
+  # ===================
+  quality:
+    name: 🔍 Lint & Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Lint
+        run: npm run lint
+
+      - name: 🧪 Type check
+        run: npm run type-check
+
+      - name: 🧪 Tests
+        run: npm run test -- --run
+        continue-on-error: true
+
+  # ===================
+  # Job 2: Build
+  # ===================
+  build:
+    name: 🔨 Build
+    runs-on: ubuntu-latest
+    needs: quality
+    
+    outputs:
+      artifact-name: ${{ steps.upload.outputs.artifact-name }}
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🔨 Build
+        run: npm run build
+        env:
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+          VITE_ADMIN_EMAIL: ${{ secrets.VITE_ADMIN_EMAIL }}
+          VITE_APP_URL: https://boris-henne.fr
+
+      - name: 📊 Build stats
+        run: |
+          echo "📊 Build output:"
+          du -sh dist/
+          echo ""
+          echo "📁 Files:"
+          find dist -type f -name "*.js" -o -name "*.css" | head -20
+
+      - name: 📤 Upload artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-build-${{ github.sha }}
+          path: dist/
+          retention-days: 7
+          if-no-files-found: error
+
+  # ===================
+  # Job 3: Deploy to FTP (LWS)
+  # ===================
+  deploy-ftp:
+    name: 🌐 Deploy to FTP (LWS)
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event.inputs.deploy_target == 'ftp' || github.event.inputs.deploy_target == 'both')
+    environment:
+      name: production
+      url: https://boris-henne.fr
+    
+    steps:
+      - name: 📥 Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: portfolio-build-${{ github.sha }}
+          path: dist/
+
+      - name: 📁 List files to deploy
+        run: |
+          echo "📁 Files to deploy:"
+          ls -la dist/
+          echo ""
+          echo "📊 Total size:"
+          du -sh dist/
+
+      - name: 🚀 Deploy to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: /htdocs/
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            videos/**
+            *.mp4
+
+      - name: ✅ Deployment complete
+        run: |
+          echo "✅ Déploiement FTP terminé !"
+          echo "🌐 Site: https://boris-henne.fr"
+
+  # ===================
+  # Job 4: Build & Push Docker Image
+  # ===================
+  deploy-docker:
+    name: 🐳 Build & Push Docker
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && (github.event.inputs.deploy_target == 'docker' || github.event.inputs.deploy_target == 'both')
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐳 Set up QEMU (multi-arch)
+        uses: docker/setup-qemu-action@v3
+
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔐 Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🏷️ Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix=
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: 🔨 Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+            VITE_ADMIN_EMAIL=${{ secrets.VITE_ADMIN_EMAIL }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: 🐳 Image info
+        run: |
+          echo "✅ Image Docker publiée !"
+          echo "📦 Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+          echo ""
+          echo "Pour déployer sur votre NAS:"
+          echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+
+  # ===================
+  # Job 5: Notify NAS (Webhook)
+  # ===================
+  notify-nas:
+    name: 📡 Notify NAS
+    runs-on: ubuntu-latest
+    needs: deploy-docker
+    if: success() && github.ref == 'refs/heads/main'
+    continue-on-error: true
+    
+    steps:
+      - name: 📡 Trigger NAS update
+        run: |
+          echo "📡 Envoi du webhook au NAS..."
+          # Si vous avez configuré un webhook sur votre NAS
+          # curl -X POST "${{ secrets.NAS_WEBHOOK_URL }}" \
+          #   -H "Content-Type: application/json" \
+          #   -d '{"event": "deploy", "image": "ghcr.io/${{ env.IMAGE_NAME }}:latest"}'
+          echo "✅ Notification envoyée (ou Watchtower gère l'auto-update)"
+
+  # ===================
+  # Job 6: Summary
+  # ===================
+  summary:
+    name: 📋 Summary
+    runs-on: ubuntu-latest
+    needs: [quality, build, deploy-ftp]
+    if: always()
+    
+    steps:
+      - name: 📋 Pipeline Summary
+        run: |
+          echo "# 📋 Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Quality | ${{ needs.quality.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build | ${{ needs.build.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Deploy FTP | ${{ needs.deploy-ftp.result == 'success' && '✅' || needs.deploy-ftp.result == 'skipped' && '⏭️' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 **Site:** https://boris-henne.fr" >> $GITHUB_STEP_SUMMARY

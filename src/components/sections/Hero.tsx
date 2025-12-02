@@ -1,0 +1,219 @@
+import { memo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { motion, useInView } from 'framer-motion';
+import {
+  MapPin,
+  Download,
+  Mail,
+  Linkedin,
+  Github,
+  ChevronDown,
+} from 'lucide-react';
+
+import { cn, scrollToElement, downloadFile } from '../../utils';
+
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: 'easeOut' },
+  },
+};
+
+const techTags = [
+  'SAP', 'ABAP', 'Fiori', 'Claude', 'GPT', 'React',
+  'Make.com', 'Docker', 'Home Assistant', 'TypeScript'
+];
+
+function HeroComponent() {
+  const { t } = useTranslation();
+  const ref = useRef<HTMLElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-100px' });
+
+  const handleContactClick = () => {
+    scrollToElement('contact');
+  };
+
+  const handleCVDownload = () => {
+    downloadFile('/cv-boris-henne.pdf', 'CV-Boris-Henne.pdf');
+  };
+
+  return (
+    <section
+      ref={ref}
+      id="home"
+      className="relative min-h-screen flex items-center justify-center pt-16 lg:pt-20"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16"
+        >
+          {/* Profile Image */}
+          <motion.div variants={itemVariants} className="relative">
+            <div className="relative w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80">
+              {/* Glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full blur-2xl opacity-30 animate-pulse" />
+              
+              {/* Image container */}
+              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-primary-500/30 glow-border">
+                <img
+                  src="/profile.jpg"
+                  alt="Boris Henné"
+                  className="w-full h-full object-cover"
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
+              
+              {/* Status badge */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.5, type: 'spring' }}
+                className="absolute -bottom-2 -right-2 px-4 py-2 rounded-full bg-dark-900 border border-primary-500/30 shadow-lg"
+              >
+                <span className="flex items-center gap-2 text-sm font-medium">
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-gray-300">Disponible</span>
+                </span>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          {/* Content */}
+          <div className="flex-1 text-center lg:text-left">
+            <motion.p
+              variants={itemVariants}
+              className="text-primary-400 font-mono text-sm sm:text-base mb-2"
+            >
+              {t('hero.greeting')}
+            </motion.p>
+
+            <motion.h1
+              variants={itemVariants}
+              className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4"
+            >
+              {t('hero.name')}
+            </motion.h1>
+
+            <motion.h2
+              variants={itemVariants}
+              className="text-xl sm:text-2xl lg:text-3xl font-medium text-gradient mb-4"
+            >
+              {t('hero.title')}
+            </motion.h2>
+
+            <motion.p
+              variants={itemVariants}
+              className="text-gray-400 text-lg mb-6"
+            >
+              {t('hero.subtitle')}
+            </motion.p>
+
+            <motion.div
+              variants={itemVariants}
+              className="flex items-center justify-center lg:justify-start gap-2 text-gray-500 mb-8"
+            >
+              <MapPin size={18} className="text-primary-500" />
+              <span>{t('hero.location')}</span>
+            </motion.div>
+
+            {/* CTA Buttons */}
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8"
+            >
+              <button
+                onClick={handleContactClick}
+                className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center"
+              >
+                <Mail size={20} />
+                {t('hero.cta')}
+              </button>
+              <button
+                onClick={handleCVDownload}
+                className="btn-secondary flex items-center gap-2 w-full sm:w-auto justify-center"
+              >
+                <Download size={20} />
+                {t('hero.cv')}
+              </button>
+            </motion.div>
+
+            {/* Social Links */}
+            <motion.div
+              variants={itemVariants}
+              className="flex items-center justify-center lg:justify-start gap-4 mb-8"
+            >
+              <a
+                href="https://www.linkedin.com/in/borishenne/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 rounded-xl glass-card-hover text-gray-400 hover:text-primary-400"
+                aria-label="LinkedIn"
+              >
+                <Linkedin size={22} />
+              </a>
+              <a
+                href="https://github.com/BorisHenne"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 rounded-xl glass-card-hover text-gray-400 hover:text-primary-400"
+                aria-label="GitHub"
+              >
+                <Github size={22} />
+              </a>
+            </motion.div>
+
+            {/* Tech tags */}
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-wrap justify-center lg:justify-start gap-2"
+            >
+              {techTags.map((tag, index) => (
+                <motion.span
+                  key={tag}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                  transition={{ delay: 0.7 + index * 0.05 }}
+                  className="tag"
+                >
+                  {tag}
+                </motion.span>
+              ))}
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Scroll indicator */}
+      <motion.button
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.5, duration: 0.5 }}
+        onClick={() => scrollToElement('about')}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-gray-500 hover:text-primary-400 transition-colors"
+        aria-label="Scroll vers le contenu"
+      >
+        <ChevronDown size={32} className="animate-bounce" />
+      </motion.button>
+    </section>
+  );
+}
+
+export default memo(HeroComponent);

@@ -1,0 +1,134 @@
+# ============================================================
+# PORTFOLIO BORIS HENNÉ - DOCKER COMPOSE COMPLET
+# ============================================================
+# Stack complète : React + Nginx + Cloudflare Tunnel
+#
+# Usage:
+#   export CLOUDFLARE_TUNNEL_TOKEN="eyJ..."
+#   docker-compose up -d --build
+#
+# Ou en une ligne:
+#   CLOUDFLARE_TUNNEL_TOKEN="eyJ..." docker-compose up -d --build
+# ============================================================
+
+services:
+  # ─────────────────────────────────────────────────────────
+  # SITE PORTFOLIO
+  # ─────────────────────────────────────────────────────────
+  site-perso:
+    container_name: site-perso
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VITE_APP_URL=https://boris-henne.fr
+        - VITE_ADMIN_EMAIL=boris.henne@gmail.com
+        - VITE_CONTACT_EMAIL=boris.henne@gmail.com
+    image: boris-portfolio:latest
+    restart: unless-stopped
+    expose:
+      - "80"
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      # CV PDF (place ton CV ici)
+      - ./data/cv:/usr/share/nginx/html/cv:ro
+      # Vidéos (SAP TechEd, etc.)
+      - ./data/videos:/usr/share/nginx/html/videos:ro
+      # Logos personnalisés
+      - ./data/logos:/usr/share/nginx/html/logos:ro
+      # Uploads divers
+      - ./uploads:/usr/share/nginx/html/uploads:ro
+      # Logs Nginx
+      - ./logs:/var/log/nginx
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+    labels:
+      - "com.centurylinklabs.watchtower.enable=false"
+
+  # ─────────────────────────────────────────────────────────
+  # CLOUDFLARE TUNNEL
+  # ─────────────────────────────────────────────────────────
+  # Expose le site sur boris-henne.fr via Cloudflare
+  # Sans ouvrir de port sur le routeur !
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflare-tunnel-boris
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    networks:
+      - internal
+    depends_on:
+      site-perso:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.25'
+
+# ─────────────────────────────────────────────────────────
+# RÉSEAU INTERNE
+# ─────────────────────────────────────────────────────────
+networks:
+  internal:
+    driver: bridge
+
+# ============================================================
+# STRUCTURE DES DOSSIERS À CRÉER
+# ============================================================
+#
+# site-perso/
+# ├── docker-compose.yml     (ce fichier)
+# ├── Dockerfile
+# ├── package.json
+# ├── vite.config.ts
+# ├── index.html
+# ├── src/                   (code React)
+# ├── docker/
+# │   ├── nginx.conf
+# │   └── default.conf
+# ├── data/
+# │   ├── cv/
+# │   │   └── cv-boris-henne.pdf
+# │   ├── videos/
+# │   │   ├── sap-teched-2025.mp4
+# │   │   └── sap-teched-poster.jpg
+# │   └── logos/
+# │       └── (logos personnalisés)
+# ├── uploads/               (fichiers uploadés)
+# └── logs/                  (logs nginx)
+#
+# ============================================================
+# COMMANDES UTILES
+# ============================================================
+#
+# Démarrer:
+#   docker-compose up -d --build
+#
+# Voir les logs:
+#   docker-compose logs -f site-perso
+#
+# Rebuild après modif:
+#   docker-compose up -d --build --force-recreate
+#
+# Arrêter:
+#   docker-compose down
+#
+# Status:
+#   docker-compose ps
+#
+# ============================================================
