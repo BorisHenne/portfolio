@@ -161,13 +161,6 @@ function AboutComponent() {
                     playsInline
                     muted={false}
                   >
-                    {/* Mobile source first (smaller file) */}
-                    <source
-                      src="/videos/sap-teched-2025-mobile.mp4"
-                      type="video/mp4"
-                      media="(max-width: 768px)"
-                    />
-                    {/* HD source for larger screens */}
                     <source
                       src="/videos/sap-teched-2025.mp4"
                       type="video/mp4"

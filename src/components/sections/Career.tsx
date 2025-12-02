@@ -123,7 +123,7 @@ function CareerComponent() {
           <div className="w-20 sm:w-28 h-1.5 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full" />
         </motion.div>
 
-        {/* Tabs */}
+        {/* Tabs - avec texte visible sur mobile */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -138,14 +138,14 @@ function CareerComponent() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  'flex items-center gap-2 sm:gap-3 px-5 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-medium text-base sm:text-lg transition-all duration-300',
+                  'flex items-center gap-1.5 sm:gap-3 px-3 sm:px-8 py-2.5 sm:py-4 rounded-xl sm:rounded-2xl font-medium text-xs sm:text-lg transition-all duration-300 touch-manipulation',
                   isActive
                     ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-dark-950 shadow-lg shadow-primary-500/30'
                     : 'glass-card text-gray-400 hover:text-primary-400 hover:border-primary-500/40'
                 )}
               >
-                <Icon size={22} />
-                <span className="hidden sm:inline">{t(`career.tabs.${tab.id}`)}</span>
+                <Icon size={18} className="sm:w-[22px] sm:h-[22px]" />
+                <span className="text-[11px] sm:text-lg">{t(`career.tabs.${tab.id}`)}</span>
               </button>
             );
           })}
