@@ -157,26 +157,6 @@ export interface ScrollAnimationOptions {
 }
 
 // ========================================
-// ENV TYPES
-// ========================================
-
-declare global {
-  interface ImportMetaEnv {
-    readonly VITE_GOOGLE_CLIENT_ID: string;
-    readonly VITE_API_URL?: string;
-    readonly VITE_ADMIN_EMAIL: string;
-    readonly VITE_CONTACT_EMAIL: string;
-    readonly MODE: 'development' | 'production' | 'test';
-    readonly DEV: boolean;
-    readonly PROD: boolean;
-  }
-
-  interface ImportMeta {
-    readonly env: ImportMetaEnv;
-  }
-}
-
-// ========================================
 // UTILITY TYPES
 // ========================================
 
