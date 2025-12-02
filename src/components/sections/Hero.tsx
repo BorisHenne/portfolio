@@ -204,11 +204,11 @@ function HeroComponent() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.5, type: 'spring' }}
-                className="absolute -bottom-2 -right-2 px-4 py-2 rounded-full bg-dark-900 border border-primary-500/30 shadow-lg"
+                className="absolute -bottom-2 -right-2 px-4 py-2 rounded-full bg-dark-900 border border-red-500/30 shadow-lg"
               >
                 <span className="flex items-center gap-2 text-sm font-medium">
-                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-gray-300">Disponible</span>
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  <span className="text-red-400">En contrat</span>
                 </span>
               </motion.div>
             </div>
