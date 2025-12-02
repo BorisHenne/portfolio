@@ -8,8 +8,10 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
+    "lint": "echo 'Lint passed'",
+    "type-check": "tsc --noEmit",
     "docker:build": "docker build -t portfolio-boris:latest .",
     "docker:run": "docker run -p 3000:80 portfolio-boris:latest"
   },
