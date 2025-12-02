@@ -55,10 +55,11 @@ const mindsetValues = [
   { key: 'noLimits', icon: Infinity },
 ];
 
-// Skills data
+// Skills data with colors matching passions
 const skillCategories = [
   {
     id: 'sap',
+    color: '#00ff88', // Primary green - matches dev passion
     skills: [
       { name: 'ABAP / ABAP-OO', level: 95 },
       { name: 'SAP Fiori / UI5', level: 90 },
@@ -69,6 +70,7 @@ const skillCategories = [
   },
   {
     id: 'ai',
+    color: '#a855f7', // Purple - matches AI passion
     skills: [
       { name: 'Claude / GPT', level: 92 },
       { name: 'Prompt Engineering', level: 90 },
@@ -78,6 +80,7 @@ const skillCategories = [
   },
   {
     id: 'frontend',
+    color: '#18bcf2', // Cyan - matches domotics (tech)
     skills: [
       { name: 'React / TypeScript', level: 88 },
       { name: 'Tailwind CSS', level: 90 },
@@ -87,6 +90,7 @@ const skillCategories = [
   },
   {
     id: 'automation',
+    color: '#fbbf24', // Yellow - matches automation passion
     skills: [
       { name: 'Make.com', level: 92 },
       { name: 'Home Assistant', level: 88 },
@@ -355,7 +359,7 @@ function CareerComponent() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
-              className="grid md:grid-cols-2 gap-6 sm:gap-8"
+              className="grid md:grid-cols-2 gap-5 sm:gap-6"
             >
               {skillCategories.map((category, catIndex) => (
                 <motion.div
@@ -363,27 +367,36 @@ function CareerComponent() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: catIndex * 0.1 }}
-                  className="glass-card rounded-xl sm:rounded-2xl p-5 sm:p-7"
+                  className="glass-card rounded-xl sm:rounded-2xl p-5 sm:p-6"
+                  style={{ borderColor: `${category.color}20` }}
                 >
-                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-5 sm:mb-6 font-display flex items-center gap-3">
-                    <Code2 size={24} className="text-primary-400" />
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-5 font-display flex items-center gap-3">
+                    <div
+                      className="w-9 h-9 rounded-lg flex items-center justify-center"
+                      style={{ backgroundColor: `${category.color}15`, border: `1px solid ${category.color}40` }}
+                    >
+                      <Code2 size={20} style={{ color: category.color }} />
+                    </div>
                     {t(`skills.categories.${category.id}`)}
                   </h3>
 
-                  <div className="space-y-4 sm:space-y-5">
+                  <div className="space-y-3 sm:space-y-4">
                     {category.skills.map((skill, skillIndex) => (
                       <div key={skill.name}>
-                        <div className="flex justify-between mb-2">
-                          <span className="text-gray-300 text-base sm:text-lg font-medium">
+                        <div className="flex justify-between mb-1.5">
+                          <span className="text-gray-300 text-sm sm:text-base font-medium">
                             {skill.name}
                           </span>
-                          <span className="text-primary-400 font-mono text-base sm:text-lg">
+                          <span className="font-mono text-sm sm:text-base" style={{ color: category.color }}>
                             {skill.level}%
                           </span>
                         </div>
-                        <div className="skill-bar">
+                        <div className="h-2 bg-dark-800 rounded-full overflow-hidden">
                           <motion.div
-                            className="skill-bar-fill"
+                            className="h-full rounded-full"
+                            style={{
+                              background: `linear-gradient(90deg, ${category.color}, ${category.color}99)`
+                            }}
                             initial={{ width: 0 }}
                             animate={{ width: `${skill.level}%` }}
                             transition={{ delay: 0.3 + skillIndex * 0.1, duration: 0.8 }}
