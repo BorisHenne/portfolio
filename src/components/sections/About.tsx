@@ -15,11 +15,11 @@ import {
 } from 'lucide-react';
 
 const interests = [
-  { key: 'music', icon: Music, color: '#ec4899' },
-  { key: 'domotics', icon: Home, color: '#18bcf2' },
-  { key: 'ai', icon: Brain, color: '#a855f7' },
-  { key: 'automation', icon: Zap, color: '#fbbf24' },
-  { key: 'dev', icon: Code, color: '#00ff88' },
+  { key: 'music', icon: Music },
+  { key: 'domotics', icon: Home },
+  { key: 'ai', icon: Brain },
+  { key: 'automation', icon: Zap },
+  { key: 'dev', icon: Code },
 ];
 
 const stats = [
@@ -120,18 +120,15 @@ function AboutComponent() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ delay: 0.5 + index * 0.1 }}
-                  className="glass-card-hover rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4"
+                  className="glass-card-hover rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 group"
                 >
-                  <div
-                    className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: `${interest.color}20` }}
-                  >
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary-500/10 border border-primary-500/20 flex items-center justify-center flex-shrink-0 group-hover:bg-primary-500/20 group-hover:border-primary-500/40 transition-all">
                     <interest.icon
-                      size={20}
-                      style={{ color: interest.color }}
+                      size={22}
+                      className="text-primary-400"
                     />
                   </div>
-                  <span className="text-sm sm:text-base lg:text-lg text-gray-300">
+                  <span className="text-sm sm:text-base lg:text-lg text-gray-300 group-hover:text-white transition-colors">
                     {t(`about.interestsList.${interest.key}`)}
                   </span>
                 </motion.div>

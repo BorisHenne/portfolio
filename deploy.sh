@@ -2,7 +2,7 @@
 # ============================================================
 # PORTFOLIO BORIS HENNÉ - SCRIPT DE DÉPLOIEMENT
 # ============================================================
-# Usage: curl -fsSL https://raw.githubusercontent.com/BorisHenne/portfolio/claude/cleanup-old-sources-01CA6edyAFw3ELST9QQPKAyp/deploy.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/BorisHenne/portfolio/main/deploy.sh | bash
 # ============================================================
 
 set -e
@@ -21,7 +21,7 @@ print_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 # Configuration
 INSTALL_DIR="/volume1/docker/site-perso"
-REPO_URL="https://github.com/BorisHenne/portfolio/archive/9ab0ef3.tar.gz"
+REPO_URL="https://github.com/BorisHenne/portfolio/archive/refs/heads/main.tar.gz"
 GOOGLE_CLIENT_ID="${VITE_GOOGLE_CLIENT_ID:-}"  # Set via environment variable
 
 echo ""
