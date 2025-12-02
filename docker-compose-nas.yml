@@ -1,0 +1,165 @@
+# ============================================================
+# PORTFOLIO BORIS HENNE - DOCKER COMPOSE POUR NAS UGREEN
+# ============================================================
+# Stack pour NAS UGreen DXP4800+ (UGOS)
+# Auto-update via Watchtower depuis GitHub Container Registry
+#
+# Installation:
+#   1. Copier ce fichier sur le NAS
+#   2. Creer les dossiers: mkdir -p ~/portfolio/{data,logs}
+#   3. Configurer le token Cloudflare (optionnel)
+#   4. Lancer: docker-compose -f docker-compose-nas.yml up -d
+#
+# ============================================================
+
+services:
+  # ─────────────────────────────────────────────────────────
+  # SITE PORTFOLIO
+  # ─────────────────────────────────────────────────────────
+  # Image pre-buildee depuis GitHub Container Registry
+  # Mise a jour automatique via Watchtower
+  portfolio:
+    container_name: portfolio-boris
+    image: ghcr.io/borishenne/portfolio:latest
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    environment:
+      - TZ=Europe/Paris
+    volumes:
+      # Donnees persistantes (CV, videos, logos)
+      - ./data/cv:/usr/share/nginx/html/cv:ro
+      - ./data/videos:/usr/share/nginx/html/videos:ro
+      - ./data/logos:/usr/share/nginx/html/logos:ro
+      # Logs Nginx
+      - ./logs:/var/log/nginx
+    networks:
+      - portfolio-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+    labels:
+      # Activer Watchtower pour ce conteneur
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  # ─────────────────────────────────────────────────────────
+  # WATCHTOWER - Auto-update des conteneurs
+  # ─────────────────────────────────────────────────────────
+  # Surveille ghcr.io et met a jour automatiquement
+  # quand une nouvelle image est disponible
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower:latest
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Paris
+      # Verifier toutes les 5 minutes (300 secondes)
+      - WATCHTOWER_POLL_INTERVAL=300
+      # Nettoyer les anciennes images
+      - WATCHTOWER_CLEANUP=true
+      # Notifier seulement les conteneurs avec le label
+      - WATCHTOWER_LABEL_ENABLE=true
+      # Logs detailles
+      - WATCHTOWER_DEBUG=false
+      # Notifications (optionnel - configurer selon besoin)
+      # - WATCHTOWER_NOTIFICATIONS=email
+      # - WATCHTOWER_NOTIFICATION_EMAIL_FROM=...
+      # - WATCHTOWER_NOTIFICATION_EMAIL_TO=...
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - portfolio-network
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+          cpus: '0.1'
+
+  # ─────────────────────────────────────────────────────────
+  # CLOUDFLARE TUNNEL (optionnel)
+  # ─────────────────────────────────────────────────────────
+  # Decommenter si tu veux exposer via Cloudflare
+  # Sans ouvrir de port sur le routeur !
+  #
+  # cloudflared:
+  #   image: cloudflare/cloudflared:latest
+  #   container_name: cloudflare-tunnel-boris
+  #   restart: unless-stopped
+  #   command: tunnel run
+  #   environment:
+  #     - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+  #   networks:
+  #     - portfolio-network
+  #   depends_on:
+  #     portfolio:
+  #       condition: service_healthy
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 128M
+  #         cpus: '0.25'
+
+# ─────────────────────────────────────────────────────────
+# RESEAU
+# ─────────────────────────────────────────────────────────
+networks:
+  portfolio-network:
+    driver: bridge
+
+# ============================================================
+# STRUCTURE DES DOSSIERS SUR LE NAS
+# ============================================================
+#
+# ~/portfolio/
+# ├── docker-compose-nas.yml   (ce fichier)
+# ├── data/
+# │   ├── cv/
+# │   │   └── cv-boris-henne.pdf
+# │   ├── videos/
+# │   │   └── (videos optionnelles)
+# │   └── logos/
+# │       └── (logos personnalises)
+# └── logs/
+#     ├── access.log
+#     └── error.log
+#
+# ============================================================
+# COMMANDES UTILES
+# ============================================================
+#
+# Premier lancement:
+#   docker-compose -f docker-compose-nas.yml up -d
+#
+# Voir les logs:
+#   docker-compose -f docker-compose-nas.yml logs -f portfolio
+#
+# Forcer une mise a jour manuelle:
+#   docker-compose -f docker-compose-nas.yml pull portfolio
+#   docker-compose -f docker-compose-nas.yml up -d portfolio
+#
+# Statut:
+#   docker-compose -f docker-compose-nas.yml ps
+#
+# Arreter:
+#   docker-compose -f docker-compose-nas.yml down
+#
+# ============================================================
+# FLUX DE DEPLOIEMENT AUTOMATIQUE
+# ============================================================
+#
+# 1. Tu push sur GitHub (branche main)
+# 2. GitHub Actions build l'image Docker
+# 3. L'image est poussee vers ghcr.io/borishenne/portfolio:latest
+# 4. Watchtower detecte la nouvelle image (toutes les 5 min)
+# 5. Watchtower pull et redemarrre automatiquement le conteneur
+# 6. Zero intervention manuelle !
+#
+# ============================================================

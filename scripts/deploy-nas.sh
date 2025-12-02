@@ -1,251 +1,306 @@
 #!/bin/bash
 # =====================================================
-# PORTFOLIO BORIS HENNÉ - Script de déploiement NAS
+# PORTFOLIO BORIS HENNE - Deploiement NAS UGreen
 # =====================================================
-# À exécuter sur le NAS Ugreen DXP4800 Plus
-# 
+# Compatible avec UGOS (UGreen DXP4800 Plus)
+#
 # Usage:
-#   ./deploy-nas.sh install    # Première installation
-#   ./deploy-nas.sh update     # Mise à jour
+#   ./deploy-nas.sh install    # Premiere installation
+#   ./deploy-nas.sh update     # Mise a jour manuelle
 #   ./deploy-nas.sh logs       # Voir les logs
-#   ./deploy-nas.sh status     # État du conteneur
+#   ./deploy-nas.sh status     # Etat des conteneurs
+#   ./deploy-nas.sh stop       # Arreter les services
+#   ./deploy-nas.sh start      # Demarrer les services
+#
+# =====================================================
 
 set -e
 
 # Configuration
-CONTAINER_NAME="portfolio-boris"
-IMAGE_NAME="ghcr.io/borishenne/portfolio:latest"
-PORT="3000"
-DATA_DIR="$HOME/portfolio-data"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INSTALL_DIR="${PORTFOLIO_DIR:-$HOME/portfolio}"
+COMPOSE_FILE="docker-compose-nas.yml"
+GITHUB_RAW="https://raw.githubusercontent.com/BorisHenne/portfolio/main"
 
 # Couleurs
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+CYAN='\033[0;36m'
+NC='\033[0m'
 
 # Fonctions utilitaires
-log_info() {
-    echo -e "${BLUE}ℹ️  $1${NC}"
+log_info()    { echo -e "${BLUE}[INFO]${NC} $1"; }
+log_success() { echo -e "${GREEN}[OK]${NC} $1"; }
+log_warning() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+log_error()   { echo -e "${RED}[ERROR]${NC} $1"; }
+log_step()    { echo -e "${CYAN}>>>${NC} $1"; }
+
+# Banner
+show_banner() {
+    echo ""
+    echo -e "${CYAN}╔═══════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║${NC}     ${GREEN}PORTFOLIO BORIS HENNE${NC} - NAS UGreen           ${CYAN}║${NC}"
+    echo -e "${CYAN}╚═══════════════════════════════════════════════════╝${NC}"
+    echo ""
 }
 
-log_success() {
-    echo -e "${GREEN}✅ $1${NC}"
-}
+# Verifier Docker et Docker Compose
+check_requirements() {
+    log_step "Verification des prerequis..."
 
-log_warning() {
-    echo -e "${YELLOW}⚠️  $1${NC}"
-}
-
-log_error() {
-    echo -e "${RED}❌ $1${NC}"
-}
-
-# Vérifier que Docker est installé
-check_docker() {
     if ! command -v docker &> /dev/null; then
-        log_error "Docker n'est pas installé !"
+        log_error "Docker n'est pas installe!"
+        log_info "Sur UGOS, activer Docker dans les parametres systeme"
         exit 1
     fi
-    log_success "Docker détecté"
+    log_success "Docker detecte: $(docker --version | cut -d' ' -f3 | tr -d ',')"
+
+    # Verifier docker compose (v2) ou docker-compose (v1)
+    if docker compose version &> /dev/null; then
+        COMPOSE_CMD="docker compose"
+        log_success "Docker Compose V2 detecte"
+    elif command -v docker-compose &> /dev/null; then
+        COMPOSE_CMD="docker-compose"
+        log_success "Docker Compose V1 detecte"
+    else
+        log_error "Docker Compose n'est pas installe!"
+        exit 1
+    fi
 }
 
-# Créer les répertoires de données
+# Creer la structure de dossiers
 create_directories() {
-    log_info "Création des répertoires..."
-    mkdir -p "$DATA_DIR/cv"
-    mkdir -p "$DATA_DIR/videos"
-    log_success "Répertoires créés: $DATA_DIR"
+    log_step "Creation de la structure de dossiers..."
+
+    mkdir -p "$INSTALL_DIR"/{data/cv,data/videos,data/logos,logs}
+
+    log_success "Dossiers crees dans: $INSTALL_DIR"
+    log_info "  - data/cv/      : Place ton CV ici"
+    log_info "  - data/videos/  : Videos optionnelles"
+    log_info "  - data/logos/   : Logos personnalises"
+    log_info "  - logs/         : Logs Nginx"
 }
 
-# Pull de l'image
-pull_image() {
-    log_info "Téléchargement de l'image Docker..."
-    docker pull "$IMAGE_NAME"
-    log_success "Image téléchargée"
-}
+# Telecharger le docker-compose depuis GitHub
+download_compose() {
+    log_step "Telechargement de la configuration Docker..."
 
-# Arrêter et supprimer l'ancien conteneur
-stop_container() {
-    if docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
-        log_info "Arrêt du conteneur existant..."
-        docker stop "$CONTAINER_NAME" 2>/dev/null || true
-        docker rm "$CONTAINER_NAME" 2>/dev/null || true
-        log_success "Ancien conteneur supprimé"
+    cd "$INSTALL_DIR"
+
+    if command -v curl &> /dev/null; then
+        curl -fsSL "$GITHUB_RAW/$COMPOSE_FILE" -o "$COMPOSE_FILE"
+    elif command -v wget &> /dev/null; then
+        wget -q "$GITHUB_RAW/$COMPOSE_FILE" -O "$COMPOSE_FILE"
+    else
+        log_error "curl ou wget requis pour telecharger"
+        exit 1
     fi
+
+    log_success "Configuration telechargee: $COMPOSE_FILE"
 }
 
-# Démarrer le conteneur
-start_container() {
-    log_info "Démarrage du conteneur..."
-    
-    docker run -d \
-        --name "$CONTAINER_NAME" \
-        --restart unless-stopped \
-        -p "$PORT:80" \
-        -v "$DATA_DIR/cv:/usr/share/nginx/html/cv:ro" \
-        -v "$DATA_DIR/videos:/usr/share/nginx/html/videos:ro" \
-        -e TZ=Europe/Paris \
-        --memory="256m" \
-        --cpus="0.5" \
-        --health-cmd="curl -f http://localhost/ || exit 1" \
-        --health-interval=30s \
-        --health-timeout=10s \
-        --health-retries=3 \
-        "$IMAGE_NAME"
-    
-    log_success "Conteneur démarré sur le port $PORT"
+# Pull les images Docker
+pull_images() {
+    log_step "Telechargement des images Docker..."
+
+    cd "$INSTALL_DIR"
+    $COMPOSE_CMD -f "$COMPOSE_FILE" pull
+
+    log_success "Images Docker telechargees"
 }
 
-# Installer Watchtower pour auto-update
-install_watchtower() {
-    log_info "Installation de Watchtower pour les mises à jour automatiques..."
-    
-    if docker ps -a --format '{{.Names}}' | grep -q "^watchtower$"; then
-        log_warning "Watchtower est déjà installé"
-        return
-    fi
-    
-    docker run -d \
-        --name watchtower \
-        --restart unless-stopped \
-        -v /var/run/docker.sock:/var/run/docker.sock \
-        -e WATCHTOWER_CLEANUP=true \
-        -e WATCHTOWER_POLL_INTERVAL=300 \
-        -e TZ=Europe/Paris \
-        containrrr/watchtower \
-        "$CONTAINER_NAME"
-    
-    log_success "Watchtower installé - Mises à jour automatiques activées"
+# Demarrer les services
+start_services() {
+    log_step "Demarrage des services..."
+
+    cd "$INSTALL_DIR"
+    $COMPOSE_CMD -f "$COMPOSE_FILE" up -d
+
+    log_success "Services demarres"
 }
 
-# Voir les logs
+# Arreter les services
+stop_services() {
+    log_step "Arret des services..."
+
+    cd "$INSTALL_DIR"
+    $COMPOSE_CMD -f "$COMPOSE_FILE" down
+
+    log_success "Services arretes"
+}
+
+# Afficher les logs
 show_logs() {
-    log_info "Logs du conteneur $CONTAINER_NAME:"
-    docker logs -f "$CONTAINER_NAME"
+    cd "$INSTALL_DIR"
+    $COMPOSE_CMD -f "$COMPOSE_FILE" logs -f --tail=100 portfolio
 }
 
-# État du conteneur
+# Afficher le statut
 show_status() {
     echo ""
-    echo "═══════════════════════════════════════════════════"
-    echo "   📊 ÉTAT DU PORTFOLIO"
-    echo "═══════════════════════════════════════════════════"
+    echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+    echo -e "   ${GREEN}STATUT DU PORTFOLIO${NC}"
+    echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
     echo ""
-    
-    if docker ps --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
-        log_success "Conteneur: EN COURS D'EXÉCUTION"
+
+    cd "$INSTALL_DIR"
+
+    # Statut des conteneurs
+    echo -e "${BLUE}Conteneurs:${NC}"
+    $COMPOSE_CMD -f "$COMPOSE_FILE" ps
+    echo ""
+
+    # Verifier la sante du portfolio
+    if docker ps --format '{{.Names}}' | grep -q "portfolio-boris"; then
+        HEALTH=$(docker inspect --format='{{.State.Health.Status}}' portfolio-boris 2>/dev/null || echo "unknown")
+
+        if [ "$HEALTH" = "healthy" ]; then
+            echo -e "${GREEN}Sante: $HEALTH${NC}"
+        else
+            echo -e "${YELLOW}Sante: $HEALTH${NC}"
+        fi
+
         echo ""
-        docker ps --filter "name=$CONTAINER_NAME" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
-        echo ""
-        
-        # Vérifier la santé
-        HEALTH=$(docker inspect --format='{{.State.Health.Status}}' "$CONTAINER_NAME" 2>/dev/null || echo "unknown")
-        echo "   Santé: $HEALTH"
-        
-        # Utilisation des ressources
-        echo ""
-        echo "   📈 Ressources:"
-        docker stats --no-stream "$CONTAINER_NAME" --format "   CPU: {{.CPUPerc}}  |  RAM: {{.MemUsage}}"
-        
+        echo -e "${BLUE}Ressources:${NC}"
+        docker stats --no-stream portfolio-boris --format "  CPU: {{.CPUPerc}}  |  RAM: {{.MemUsage}}" 2>/dev/null || true
     else
-        log_error "Conteneur: ARRÊTÉ"
+        echo -e "${RED}Le conteneur portfolio-boris n'est pas en cours d'execution${NC}"
     fi
-    
+
+    # Obtenir l'IP du NAS
+    NAS_IP=$(hostname -I 2>/dev/null | awk '{print $1}' || echo "localhost")
+
     echo ""
-    echo "   🌐 URL: http://$(hostname -I | awk '{print $1}'):$PORT"
+    echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+    echo -e "   ${GREEN}ACCES${NC}"
+    echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
     echo ""
-    echo "═══════════════════════════════════════════════════"
+    echo -e "   Local:  ${BLUE}http://$NAS_IP:3000${NC}"
+    echo -e "   Public: ${BLUE}https://boris-henne.fr${NC} (via Cloudflare)"
+    echo ""
 }
 
-# Nettoyage
+# Nettoyage des images inutilisees
 cleanup() {
-    log_info "Nettoyage des images inutilisées..."
+    log_step "Nettoyage des images inutilisees..."
     docker image prune -f
-    log_success "Nettoyage terminé"
+    log_success "Nettoyage termine"
+}
+
+# Installation complete
+do_install() {
+    show_banner
+    echo -e "${GREEN}Installation du portfolio sur le NAS${NC}"
+    echo ""
+
+    check_requirements
+    create_directories
+    download_compose
+    pull_images
+    start_services
+    cleanup
+
+    echo ""
+    log_success "Installation terminee!"
+    show_status
+
+    echo ""
+    echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+    echo -e "   ${GREEN}PROCHAINES ETAPES${NC}"
+    echo -e "${CYAN}═══════════════════════════════════════════════════${NC}"
+    echo ""
+    echo "   1. Place ton CV dans: $INSTALL_DIR/data/cv/"
+    echo "   2. (Optionnel) Configure Cloudflare Tunnel"
+    echo "   3. Le site se met a jour automatiquement via Watchtower!"
+    echo ""
+}
+
+# Mise a jour manuelle
+do_update() {
+    show_banner
+    echo -e "${GREEN}Mise a jour du portfolio${NC}"
+    echo ""
+
+    check_requirements
+
+    cd "$INSTALL_DIR"
+
+    log_step "Telechargement de la derniere image..."
+    $COMPOSE_CMD -f "$COMPOSE_FILE" pull portfolio
+
+    log_step "Redemarrage du portfolio..."
+    $COMPOSE_CMD -f "$COMPOSE_FILE" up -d portfolio
+
+    cleanup
+
+    echo ""
+    log_success "Mise a jour terminee!"
+    show_status
 }
 
 # Menu principal
-case "$1" in
+case "${1:-}" in
     install)
-        echo ""
-        echo "═══════════════════════════════════════════════════"
-        echo "   🚀 INSTALLATION DU PORTFOLIO"
-        echo "═══════════════════════════════════════════════════"
-        echo ""
-        
-        check_docker
-        create_directories
-        pull_image
-        stop_container
-        start_container
-        install_watchtower
-        cleanup
-        
-        echo ""
-        log_success "Installation terminée !"
-        show_status
+        do_install
         ;;
-    
+
     update)
-        echo ""
-        echo "═══════════════════════════════════════════════════"
-        echo "   🔄 MISE À JOUR DU PORTFOLIO"
-        echo "═══════════════════════════════════════════════════"
-        echo ""
-        
-        check_docker
-        pull_image
-        stop_container
-        start_container
-        cleanup
-        
-        echo ""
-        log_success "Mise à jour terminée !"
-        show_status
+        do_update
         ;;
-    
+
     logs)
         show_logs
         ;;
-    
+
     status)
         show_status
         ;;
-    
+
     stop)
-        log_info "Arrêt du conteneur..."
-        docker stop "$CONTAINER_NAME"
-        log_success "Conteneur arrêté"
+        show_banner
+        check_requirements
+        stop_services
         ;;
-    
+
     start)
-        log_info "Démarrage du conteneur..."
-        docker start "$CONTAINER_NAME"
-        log_success "Conteneur démarré"
+        show_banner
+        check_requirements
+        cd "$INSTALL_DIR"
+        start_services
         show_status
         ;;
-    
+
     restart)
-        log_info "Redémarrage du conteneur..."
-        docker restart "$CONTAINER_NAME"
-        log_success "Conteneur redémarré"
+        show_banner
+        check_requirements
+        cd "$INSTALL_DIR"
+        $COMPOSE_CMD -f "$COMPOSE_FILE" restart
+        log_success "Services redemarres"
         show_status
         ;;
-    
+
+    cleanup)
+        show_banner
+        cleanup
+        ;;
+
     *)
-        echo ""
-        echo "Usage: $0 {install|update|logs|status|stop|start|restart}"
+        show_banner
+        echo "Usage: $0 {install|update|logs|status|stop|start|restart|cleanup}"
         echo ""
         echo "Commandes:"
-        echo "  install  - Première installation complète"
-        echo "  update   - Mettre à jour vers la dernière version"
-        echo "  logs     - Afficher les logs en temps réel"
-        echo "  status   - Afficher l'état du conteneur"
-        echo "  stop     - Arrêter le conteneur"
-        echo "  start    - Démarrer le conteneur"
-        echo "  restart  - Redémarrer le conteneur"
+        echo "  install   - Premiere installation complete"
+        echo "  update    - Mise a jour manuelle (Watchtower le fait auto)"
+        echo "  logs      - Afficher les logs en temps reel"
+        echo "  status    - Afficher l'etat des services"
+        echo "  stop      - Arreter tous les services"
+        echo "  start     - Demarrer les services"
+        echo "  restart   - Redemarrer les services"
+        echo "  cleanup   - Nettoyer les images inutilisees"
+        echo ""
+        echo "Dossier d'installation: $INSTALL_DIR"
         echo ""
         exit 1
         ;;
