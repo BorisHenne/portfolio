@@ -3,8 +3,7 @@ export default {
   nav: {
     home: 'Accueil',
     about: 'À propos',
-    experience: 'Expérience',
-    skills: 'Compétences',
+    career: 'Parcours',
     projects: 'Projets',
     contact: 'Contact',
   },
@@ -18,6 +17,7 @@ export default {
     location: 'Thionville, Grand Est, France',
     cta: 'Me contacter',
     cv: 'Télécharger CV',
+    status: 'En contrat',
   },
 
   // About Section
@@ -36,6 +36,16 @@ export default {
     years: 'Années d\'expérience',
     projects: 'Projets réalisés',
     certifications: 'Technologies maîtrisées',
+  },
+
+  // Career Section (combined)
+  career: {
+    title: 'Parcours',
+    tabs: {
+      experience: 'Expérience',
+      education: 'Formation',
+      skills: 'Compétences',
+    },
   },
 
   // Experience Section
@@ -154,6 +164,14 @@ export default {
         period: '2006 - 2008',
       },
     },
+  },
+
+  // SAP TechEd Section
+  teched: {
+    title: 'SAP TechEd 2025',
+    eventTitle: 'SAP TechEd 2025 Berlin',
+    location: 'Berlin, Allemagne',
+    description: 'Participant à SAP TechEd 2025, l\'événement phare de SAP dédié à l\'IA. Découverte de SAP Joule, ABAP-1 (le nouveau modèle IA pour ABAP), et les dernières innovations en matière d\'intelligence artificielle appliquée à l\'écosystème SAP.',
   },
 
   // Skills Section

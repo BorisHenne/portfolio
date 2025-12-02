@@ -7,7 +7,7 @@ import { useUIStore, useLanguageStore, useAuthStore } from '../../stores/useStor
 import { useScrollPosition, useKeyPress } from '../../hooks';
 import { cn, scrollToElement } from '../../utils';
 
-const NAV_ITEMS = ['home', 'about', 'experience', 'skills', 'projects', 'contact'] as const;
+const NAV_ITEMS = ['home', 'about', 'career', 'projects', 'contact'] as const;
 
 function NavbarComponent() {
   const { t, i18n } = useTranslation();
@@ -101,11 +101,11 @@ function NavbarComponent() {
             {/* Language toggle */}
             <button
               onClick={toggleLanguage}
-              className="p-2 rounded-lg text-gray-400 hover:text-primary-400 hover:bg-primary-500/10 transition-all"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-gray-400 hover:text-primary-400 hover:bg-primary-500/10 transition-all"
               aria-label={`Switch to ${language === 'fr' ? 'English' : 'Français'}`}
             >
-              <Globe size={20} />
-              <span className="sr-only">{language === 'fr' ? 'EN' : 'FR'}</span>
+              <Globe size={18} />
+              <span className="text-sm font-medium uppercase">{language}</span>
             </button>
 
             {/* Admin indicator */}

@@ -3,8 +3,7 @@ export default {
   nav: {
     home: 'Home',
     about: 'About',
-    experience: 'Experience',
-    skills: 'Skills',
+    career: 'Career',
     projects: 'Projects',
     contact: 'Contact',
   },
@@ -18,6 +17,7 @@ export default {
     location: 'Thionville, Grand Est, France',
     cta: 'Contact me',
     cv: 'Download CV',
+    status: 'Under contract',
   },
 
   // About Section
@@ -36,6 +36,16 @@ export default {
     years: 'Years of experience',
     projects: 'Projects completed',
     certifications: 'Technologies mastered',
+  },
+
+  // Career Section (combined)
+  career: {
+    title: 'Career',
+    tabs: {
+      experience: 'Experience',
+      education: 'Education',
+      skills: 'Skills',
+    },
   },
 
   // Experience Section
@@ -154,6 +164,14 @@ export default {
         period: '2006 - 2008',
       },
     },
+  },
+
+  // SAP TechEd Section
+  teched: {
+    title: 'SAP TechEd 2025',
+    eventTitle: 'SAP TechEd 2025 Berlin',
+    location: 'Berlin, Germany',
+    description: 'Attendee at SAP TechEd 2025, SAP\'s flagship event dedicated to AI. Discovering SAP Joule, ABAP-1 (the new AI model for ABAP), and the latest innovations in artificial intelligence applied to the SAP ecosystem.',
   },
 
   // Skills Section

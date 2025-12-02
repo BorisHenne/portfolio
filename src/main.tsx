@@ -6,7 +6,7 @@ import App from './App';
 import './i18n';
 import './index.css';
 
-// Google OAuth Client ID
+// Google OAuth Client ID (optionnel)
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
 
 // Validation de l'élément root
@@ -16,11 +16,18 @@ if (!rootElement) {
 }
 
 // React 18 Concurrent Mode
+// GoogleOAuthProvider uniquement si le client ID est configuré
+const AppWithProviders = GOOGLE_CLIENT_ID ? (
+  <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+    <App />
+  </GoogleOAuthProvider>
+) : (
+  <App />
+);
+
 createRoot(rootElement).render(
   <StrictMode>
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <App />
-    </GoogleOAuthProvider>
+    {AppWithProviders}
   </StrictMode>
 );
 

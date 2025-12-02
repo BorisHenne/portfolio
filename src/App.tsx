@@ -8,8 +8,7 @@ import { LoadingSpinner } from './components/ui/LoadingSpinner';
 const Navbar = lazy(() => import('./components/layout/Navbar'));
 const Hero = lazy(() => import('./components/sections/Hero'));
 const About = lazy(() => import('./components/sections/About'));
-const Experience = lazy(() => import('./components/sections/Experience'));
-const Skills = lazy(() => import('./components/sections/Skills'));
+const Career = lazy(() => import('./components/sections/Career'));
 const Projects = lazy(() => import('./components/sections/Projects'));
 const Contact = lazy(() => import('./components/sections/Contact'));
 const Footer = lazy(() => import('./components/layout/Footer'));
@@ -72,11 +71,7 @@ export default function App() {
           </Suspense>
 
           <Suspense fallback={<SectionLoader />}>
-            <Experience />
-          </Suspense>
-
-          <Suspense fallback={<SectionLoader />}>
-            <Skills />
+            <Career />
           </Suspense>
 
           <Suspense fallback={<SectionLoader />}>
