@@ -10,6 +10,7 @@ const Hero = lazy(() => import('./components/sections/Hero'));
 const About = lazy(() => import('./components/sections/About'));
 const Experience = lazy(() => import('./components/sections/Experience'));
 const Education = lazy(() => import('./components/sections/Education'));
+const SapTechEd = lazy(() => import('./components/sections/SapTechEd'));
 const Skills = lazy(() => import('./components/sections/Skills'));
 const Projects = lazy(() => import('./components/sections/Projects'));
 const Contact = lazy(() => import('./components/sections/Contact'));
@@ -78,6 +79,10 @@ export default function App() {
 
           <Suspense fallback={<SectionLoader />}>
             <Education />
+          </Suspense>
+
+          <Suspense fallback={<SectionLoader />}>
+            <SapTechEd />
           </Suspense>
 
           <Suspense fallback={<SectionLoader />}>

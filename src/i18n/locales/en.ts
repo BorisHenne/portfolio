@@ -157,6 +157,14 @@ export default {
     },
   },
 
+  // SAP TechEd Section
+  teched: {
+    title: 'SAP TechEd 2025',
+    eventTitle: 'SAP TechEd 2025 Barcelona',
+    location: 'Barcelona, Spain',
+    description: 'Attendee at SAP TechEd 2025, SAP\'s flagship event for developers and architects. Discovering the latest innovations in AI, ABAP Cloud, and Fiori Elements. An enriching experience at the heart of the SAP ecosystem.',
+  },
+
   // Skills Section
   skills: {
     title: 'Skills',
