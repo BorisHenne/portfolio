@@ -21,7 +21,7 @@ print_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 # Configuration
 INSTALL_DIR="/volume1/docker/site-perso"
-REPO_URL="https://github.com/BorisHenne/portfolio/archive/c3da0b9.tar.gz"
+REPO_URL="https://github.com/BorisHenne/portfolio/archive/9ab0ef3.tar.gz"
 GOOGLE_CLIENT_ID="${VITE_GOOGLE_CLIENT_ID:-}"  # Set via environment variable
 
 echo ""
