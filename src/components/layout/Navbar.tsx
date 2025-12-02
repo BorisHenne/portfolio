@@ -7,7 +7,7 @@ import { useUIStore, useLanguageStore, useAuthStore } from '../../stores/useStor
 import { useScrollPosition, useKeyPress } from '../../hooks';
 import { cn, scrollToElement } from '../../utils';
 
-const NAV_ITEMS = ['home', 'about', 'experience', 'education', 'skills', 'projects', 'contact'] as const;
+const NAV_ITEMS = ['home', 'about', 'career', 'projects', 'contact'] as const;
 
 function NavbarComponent() {
   const { t, i18n } = useTranslation();

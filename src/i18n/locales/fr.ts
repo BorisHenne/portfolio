@@ -3,9 +3,7 @@ export default {
   nav: {
     home: 'Accueil',
     about: 'À propos',
-    experience: 'Expérience',
-    education: 'Formation',
-    skills: 'Compétences',
+    career: 'Parcours',
     projects: 'Projets',
     contact: 'Contact',
   },
@@ -37,6 +35,16 @@ export default {
     years: 'Années d\'expérience',
     projects: 'Projets réalisés',
     certifications: 'Technologies maîtrisées',
+  },
+
+  // Career Section (combined)
+  career: {
+    title: 'Parcours',
+    tabs: {
+      experience: 'Expérience',
+      education: 'Formation',
+      skills: 'Compétences',
+    },
   },
 
   // Experience Section

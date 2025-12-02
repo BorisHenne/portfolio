@@ -27,10 +27,24 @@
 
   body {
     font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
     background-color: var(--color-matrix-dark);
     color: #e2e8f0;
     overflow-x: hidden;
     min-height: 100vh;
+  }
+
+  @media (min-width: 640px) {
+    body {
+      font-size: 17px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    body {
+      font-size: 18px;
+    }
   }
 
   code, kbd, samp, pre {
@@ -154,18 +168,18 @@
 
   /* Skill bar */
   .skill-bar {
-    height: 8px;
+    height: 10px;
     background: rgba(0, 255, 136, 0.1);
-    border-radius: 4px;
+    border-radius: 5px;
     overflow: hidden;
   }
 
   .skill-bar-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--color-matrix-glow), var(--color-cyber-accent));
-    border-radius: 4px;
+    border-radius: 5px;
     transition: width 1s ease-out;
-    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
   }
 
   /* Gradient text */
@@ -211,7 +225,7 @@
 
   /* Tag/Badge */
   .tag {
-    @apply px-4 py-2 rounded-full text-sm;
+    @apply px-4 py-2.5 rounded-full text-sm sm:text-base;
     font-family: 'JetBrains Mono', monospace;
     background: rgba(0, 255, 136, 0.1);
     color: var(--color-matrix-glow);
@@ -282,13 +296,13 @@
 
   /* Section titles */
   .section-title {
-    @apply text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6;
+    @apply text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-6;
     font-family: 'Space Mono', monospace;
     letter-spacing: -0.02em;
   }
 
   .section-subtitle {
-    @apply text-xl sm:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed;
+    @apply text-lg sm:text-xl lg:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed;
   }
 
   /* Grid background pattern */
