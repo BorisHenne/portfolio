@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react';
+import { memo, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, useInView } from 'framer-motion';
 import {
@@ -10,9 +10,9 @@ import {
   Calendar,
   FolderGit2,
   Award,
+  MapPin,
+  Play,
 } from 'lucide-react';
-
-import { cn } from '../../utils';
 
 const interests = [
   { key: 'music', icon: Music, color: '#ec4899' },
@@ -28,30 +28,50 @@ const stats = [
   { key: 'certifications', value: '30+', icon: Award },
 ];
 
+const techEdTags = ['SAP Joule', 'ABAP-1', 'SAP AI Core', 'Generative AI', 'Clean Core'];
+
 function AboutComponent() {
   const { t } = useTranslation();
   const ref = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const isVideoInView = useInView(videoContainerRef, { amount: 0.6 });
+
+  // Autoplay video when in view with 20% volume
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isVideoInView) {
+      video.volume = 0.2;
+      video.play().catch(() => {
+        // Autoplay blocked by browser, user needs to interact
+      });
+    } else {
+      video.pause();
+    }
+  }, [isVideoInView]);
 
   return (
-    <section ref={ref} id="about" className="py-20 lg:py-32 relative">
+    <section ref={ref} id="about" className="py-16 sm:py-24 lg:py-32 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-12 sm:mb-16"
         >
           <h2 className="section-title">
             <span className="text-primary-500">&lt;</span>
             {t('about.title')}
             <span className="text-primary-500"> /&gt;</span>
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full" />
+          <div className="w-20 sm:w-28 h-1.5 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full" />
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
           {/* Text content */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -59,26 +79,26 @@ function AboutComponent() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="space-y-6"
           >
-            <p className="text-xl text-gray-300 leading-relaxed">
+            <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 leading-relaxed">
               {t('about.intro')}
             </p>
-            <p className="text-gray-400 leading-relaxed">
+            <p className="text-base sm:text-lg text-gray-400 leading-relaxed">
               {t('about.description')}
             </p>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 pt-6">
+            <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-4 sm:pt-6">
               {stats.map((stat, index) => (
                 <motion.div
                   key={stat.key}
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.4 + index * 0.1 }}
-                  className="glass-card rounded-xl p-4 text-center"
+                  className="glass-card rounded-xl p-3 sm:p-5 text-center"
                 >
-                  <stat.icon className="w-6 h-6 mx-auto mb-2 text-primary-500" />
-                  <div className="text-2xl font-bold text-white">{stat.value}</div>
-                  <div className="text-xs text-gray-500">{t(`about.${stat.key}`)}</div>
+                  <stat.icon className="w-5 h-5 sm:w-7 sm:h-7 mx-auto mb-2 text-primary-500" />
+                  <div className="text-xl sm:text-3xl font-bold text-white">{stat.value}</div>
+                  <div className="text-xs sm:text-sm text-gray-500">{t(`about.${stat.key}`)}</div>
                 </motion.div>
               ))}
             </div>
@@ -90,20 +110,20 @@ function AboutComponent() {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <h3 className="font-display text-xl font-semibold text-white mb-6">
+            <h3 className="font-display text-lg sm:text-xl lg:text-2xl font-semibold text-white mb-4 sm:mb-6">
               {t('about.interests')}
             </h3>
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {interests.map((interest, index) => (
                 <motion.div
                   key={interest.key}
                   initial={{ opacity: 0, x: 20 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ delay: 0.5 + index * 0.1 }}
-                  className="glass-card-hover rounded-xl p-4 flex items-center gap-4"
+                  className="glass-card-hover rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4"
                 >
                   <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center"
+                    className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg flex items-center justify-center flex-shrink-0"
                     style={{ backgroundColor: `${interest.color}20` }}
                   >
                     <interest.icon
@@ -111,7 +131,7 @@ function AboutComponent() {
                       style={{ color: interest.color }}
                     />
                   </div>
-                  <span className="text-gray-300">
+                  <span className="text-sm sm:text-base lg:text-lg text-gray-300">
                     {t(`about.interestsList.${interest.key}`)}
                   </span>
                 </motion.div>
@@ -119,6 +139,92 @@ function AboutComponent() {
             </div>
           </motion.div>
         </div>
+
+        {/* SAP TechEd 2025 Section - Integrated */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="mt-12 sm:mt-16 lg:mt-20"
+        >
+          <div className="glass-card rounded-xl sm:rounded-2xl p-5 sm:p-8 lg:p-10 border-primary-500/30">
+            <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
+              {/* Video Container */}
+              <div ref={videoContainerRef} className="lg:w-1/2">
+                <div className="relative rounded-xl overflow-hidden bg-dark-900 aspect-video group">
+                  <video
+                    ref={videoRef}
+                    className="w-full h-full object-cover"
+                    controls
+                    preload="metadata"
+                    poster="/videos/sap-teched-poster.jpg"
+                    playsInline
+                    muted={false}
+                  >
+                    {/* Mobile source first (smaller file) */}
+                    <source
+                      src="/videos/sap-teched-2025-mobile.mp4"
+                      type="video/mp4"
+                      media="(max-width: 768px)"
+                    />
+                    {/* HD source for larger screens */}
+                    <source
+                      src="/videos/sap-teched-2025.mp4"
+                      type="video/mp4"
+                    />
+                    Your browser does not support the video tag.
+                  </video>
+
+                  {/* Play overlay hint */}
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-primary-500/80 flex items-center justify-center backdrop-blur-sm">
+                      <Play size={32} className="text-dark-950 ml-1" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="lg:w-1/2 flex flex-col justify-center">
+                {/* Icon + Title */}
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center border border-primary-500/30 flex-shrink-0">
+                    <span className="text-xl sm:text-2xl font-bold text-primary-400 font-mono">SAP</span>
+                  </div>
+                  <div>
+                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white font-display">
+                      {t('teched.eventTitle')}
+                    </h3>
+                    <div className="flex items-center gap-1.5 text-primary-400 text-sm sm:text-base mt-1">
+                      <MapPin size={16} />
+                      <span>{t('teched.location')}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <p className="text-gray-400 text-sm sm:text-base lg:text-lg leading-relaxed mb-5 sm:mb-6">
+                  {t('teched.description')}
+                </p>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2">
+                  {techEdTags.map((tag, index) => (
+                    <motion.span
+                      key={tag}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                      transition={{ delay: 0.7 + index * 0.05 }}
+                      className="tag"
+                    >
+                      {tag}
+                    </motion.span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

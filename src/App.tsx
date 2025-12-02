@@ -9,7 +9,6 @@ const Navbar = lazy(() => import('./components/layout/Navbar'));
 const Hero = lazy(() => import('./components/sections/Hero'));
 const About = lazy(() => import('./components/sections/About'));
 const Career = lazy(() => import('./components/sections/Career'));
-const SapTechEd = lazy(() => import('./components/sections/SapTechEd'));
 const Projects = lazy(() => import('./components/sections/Projects'));
 const Contact = lazy(() => import('./components/sections/Contact'));
 const Footer = lazy(() => import('./components/layout/Footer'));
@@ -73,10 +72,6 @@ export default function App() {
 
           <Suspense fallback={<SectionLoader />}>
             <Career />
-          </Suspense>
-
-          <Suspense fallback={<SectionLoader />}>
-            <SapTechEd />
           </Suspense>
 
           <Suspense fallback={<SectionLoader />}>
