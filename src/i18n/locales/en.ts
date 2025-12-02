@@ -160,9 +160,9 @@ export default {
   // SAP TechEd Section
   teched: {
     title: 'SAP TechEd 2025',
-    eventTitle: 'SAP TechEd 2025 Barcelona',
-    location: 'Barcelona, Spain',
-    description: 'Attendee at SAP TechEd 2025, SAP\'s flagship event for developers and architects. Discovering the latest innovations in AI, ABAP Cloud, and Fiori Elements. An enriching experience at the heart of the SAP ecosystem.',
+    eventTitle: 'SAP TechEd 2025 Berlin',
+    location: 'Berlin, Germany',
+    description: 'Attendee at SAP TechEd 2025, SAP\'s flagship event dedicated to AI. Discovering SAP Joule, ABAP-1 (the new AI model for ABAP), and the latest innovations in artificial intelligence applied to the SAP ecosystem.',
   },
 
   // Skills Section

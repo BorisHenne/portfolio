@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, useInView } from 'framer-motion';
 import { MapPin, Play } from 'lucide-react';
 
-const techTags = ['SAP AI Hub', 'ABAP Cloud', 'Fiori Elements', 'RAP', 'Clean Core'];
+const techTags = ['SAP Joule', 'ABAP-1', 'SAP AI Core', 'Generative AI', 'Clean Core'];
 
 function SapTechEdComponent() {
   const { t } = useTranslation();
