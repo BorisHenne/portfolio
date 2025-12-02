@@ -24,8 +24,8 @@ services:
         - VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID}
     image: boris-portfolio:latest
     restart: unless-stopped
-    expose:
-      - "80"
+    ports:
+      - "8080:80"
     environment:
       - TZ=Europe/Paris
     volumes:
