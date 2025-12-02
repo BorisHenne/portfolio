@@ -24,6 +24,7 @@ services:
         - VITE_APP_URL=https://boris-henne.fr
         - VITE_ADMIN_EMAIL=boris.henne@gmail.com
         - VITE_CONTACT_EMAIL=boris.henne@gmail.com
+        - VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID}
     image: boris-portfolio:latest
     restart: unless-stopped
     expose:

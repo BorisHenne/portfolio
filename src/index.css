@@ -209,11 +209,90 @@
 
   /* Tag/Badge */
   .tag {
-    @apply px-3 py-1 rounded-full text-xs;
+    @apply px-3 py-1.5 rounded-full text-sm;
     font-family: 'JetBrains Mono', monospace;
     background: rgba(0, 255, 136, 0.1);
     color: var(--color-matrix-glow);
     border: 1px solid rgba(0, 255, 136, 0.2);
+  }
+
+  /* Glass card with hover (improved) */
+  .glass-card-hover {
+    background: linear-gradient(135deg,
+      rgba(0, 255, 136, 0.05),
+      rgba(10, 15, 13, 0.8),
+      rgba(20, 184, 166, 0.05)
+    );
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 136, 0.15);
+    transition: all 0.3s ease;
+  }
+
+  .glass-card-hover:hover {
+    border-color: rgba(0, 255, 136, 0.4);
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.15);
+    transform: translateY(-2px);
+  }
+
+  /* Primary Button */
+  .btn-primary {
+    @apply px-6 py-3.5 rounded-xl font-semibold text-base;
+    background: linear-gradient(135deg, var(--color-matrix-glow), var(--color-cyber-accent));
+    color: var(--color-matrix-dark);
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px rgba(0, 255, 136, 0.4);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  /* Secondary Button */
+  .btn-secondary {
+    @apply px-6 py-3.5 rounded-xl font-semibold text-base;
+    background: transparent;
+    color: var(--color-matrix-glow);
+    border: 2px solid var(--color-matrix-glow);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(0, 255, 136, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px rgba(0, 255, 136, 0.2);
+  }
+
+  /* Section titles */
+  .section-title {
+    @apply text-4xl sm:text-5xl lg:text-6xl font-bold text-white;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .section-subtitle {
+    @apply text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto;
+  }
+
+  /* Grid background pattern */
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  /* Glow border effect */
+  .glow-border {
+    box-shadow:
+      0 0 20px rgba(0, 255, 136, 0.3),
+      inset 0 0 20px rgba(0, 255, 136, 0.1);
   }
 }
 
