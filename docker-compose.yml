@@ -41,6 +41,7 @@ services:
       - ./logs:/var/log/nginx
     networks:
       - internal
+      - shared-net
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/health"]
       interval: 30s
@@ -61,6 +62,8 @@ services:
 networks:
   internal:
     driver: bridge
+  shared-net:
+    external: true
 
 # ============================================================
 # STRUCTURE DES DOSSIERS À CRÉER
