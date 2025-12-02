@@ -367,15 +367,111 @@
 /* ========================================
    RESPONSIVE ADJUSTMENTS
    ======================================== */
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  .btn-primary,
+  .btn-secondary {
+    min-height: 48px;
+    padding: 0.875rem 1.5rem;
+  }
+
+  /* Remove hover transforms on touch */
+  .glass-card:hover,
+  .glass-card-hover:hover {
+    transform: none;
+  }
+
+  /* Active states instead of hover */
+  .glass-card:active,
+  .glass-card-hover:active {
+    border-color: rgba(0, 255, 136, 0.4);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.15);
+  }
+
+  .btn-primary:active {
+    transform: scale(0.98);
+    box-shadow: 0 5px 20px rgba(0, 255, 136, 0.3);
+  }
+
+  .btn-secondary:active {
+    background: rgba(0, 255, 136, 0.15);
+    transform: scale(0.98);
+  }
+
+  .tag:active {
+    background: rgba(0, 255, 136, 0.25);
+    transform: scale(0.95);
+  }
+}
+
+/* Mobile styles */
 @media (max-width: 640px) {
   .glass-card {
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
+    padding: 1.25rem;
   }
 
   .btn-cyber {
     padding: 0.625rem 1rem;
     font-size: 0.75rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    @apply px-5 py-3 text-base;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .section-title {
+    @apply text-3xl sm:text-4xl mb-4;
+  }
+
+  .section-subtitle {
+    @apply text-base;
+  }
+
+  .tag {
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  /* Compact skill bars */
+  .skill-bar {
+    height: 6px;
+  }
+
+  /* Better spacing */
+  section {
+    @apply py-12;
+  }
+
+  /* Swipe-friendly horizontal scroll */
+  .scroll-x-touch {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .scroll-x-touch::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scroll-x-touch > * {
+    scroll-snap-align: start;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .glass-card {
+    padding: 1.5rem;
+  }
+
+  .section-title {
+    @apply text-4xl sm:text-5xl;
   }
 }
 

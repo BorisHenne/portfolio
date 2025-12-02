@@ -141,31 +141,31 @@ function HeroComponent() {
     <section
       ref={ref}
       id="home"
-      className="relative min-h-screen flex items-center justify-center pt-16 lg:pt-20 overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center pt-14 sm:pt-16 lg:pt-20 overflow-hidden"
     >
-      {/* Particle Canvas */}
+      {/* Particle Canvas - hidden on mobile for performance */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 hidden sm:block"
         style={{ opacity: 0.6 }}
       />
 
       {/* Grid Background */}
-      <div className="absolute inset-0 bg-grid opacity-50" />
+      <div className="absolute inset-0 bg-grid opacity-30 sm:opacity-50" />
 
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-transparent to-dark-950" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-20">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
-          className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16"
+          className="flex flex-col lg:flex-row items-center gap-6 sm:gap-12 lg:gap-16"
         >
           {/* Profile Image */}
           <motion.div variants={itemVariants} className="relative">
-            <div className="relative w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80">
+            <div className="relative w-36 h-36 sm:w-56 sm:h-56 lg:w-72 lg:h-72">
               {/* Glow effect */}
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 opacity-20 blur-2xl animate-pulse" />
 
@@ -187,14 +187,14 @@ function HeroComponent() {
                 />
               </div>
 
-              {/* Decorative elements */}
+              {/* Decorative elements - hidden on mobile */}
               <motion.div
-                className="absolute -top-4 -right-4 w-8 h-8 border-2 border-primary-500 rounded-full"
+                className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 w-5 h-5 sm:w-8 sm:h-8 border-2 border-primary-500 rounded-full hidden sm:block"
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
               <motion.div
-                className="absolute -bottom-2 -left-2 w-6 h-6 bg-primary-500/30 rounded-full"
+                className="absolute -bottom-1 -left-1 sm:-bottom-2 sm:-left-2 w-4 h-4 sm:w-6 sm:h-6 bg-primary-500/30 rounded-full hidden sm:block"
                 animate={{ scale: [1, 1.3, 1] }}
                 transition={{ duration: 2.5, repeat: Infinity }}
               />
@@ -204,10 +204,10 @@ function HeroComponent() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.5, type: 'spring' }}
-                className="absolute -bottom-2 -right-2 px-4 py-2 rounded-full bg-dark-900 border border-red-500/30 shadow-lg"
+                className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 px-2.5 py-1 sm:px-4 sm:py-2 rounded-full bg-dark-900 border border-red-500/30 shadow-lg"
               >
-                <span className="flex items-center gap-2 text-sm font-medium">
-                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                <span className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium">
+                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-red-500 animate-pulse" />
                   <span className="text-red-400">En contrat</span>
                 </span>
               </motion.div>
@@ -218,98 +218,98 @@ function HeroComponent() {
           <div className="flex-1 text-center lg:text-left">
             <motion.p
               variants={itemVariants}
-              className="text-primary-400 font-mono text-sm sm:text-base mb-2"
+              className="text-primary-400 font-mono text-xs sm:text-sm mb-1 sm:mb-2"
             >
               {'>'} {t('hero.greeting')}
             </motion.p>
 
             <motion.h1
               variants={itemVariants}
-              className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4"
+              className="font-display text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-2 sm:mb-3"
             >
               {t('hero.name')}
             </motion.h1>
 
             <motion.h2
               variants={itemVariants}
-              className="text-xl sm:text-2xl lg:text-3xl font-medium text-gradient mb-4"
+              className="text-lg sm:text-xl lg:text-2xl font-medium text-gradient mb-2 sm:mb-3"
             >
               {t('hero.title')}
             </motion.h2>
 
             <motion.p
               variants={itemVariants}
-              className="text-gray-400 text-lg mb-6"
+              className="text-gray-400 text-sm sm:text-base lg:text-lg mb-3 sm:mb-4"
             >
               {t('hero.subtitle')}
             </motion.p>
 
             <motion.div
               variants={itemVariants}
-              className="flex items-center justify-center lg:justify-start gap-2 text-gray-500 mb-8"
+              className="flex items-center justify-center lg:justify-start gap-2 text-gray-500 mb-4 sm:mb-6"
             >
-              <MapPin size={18} className="text-primary-500" />
-              <span className="font-mono text-sm">{t('hero.location')}</span>
+              <MapPin size={16} className="text-primary-500" />
+              <span className="font-mono text-xs sm:text-sm">{t('hero.location')}</span>
             </motion.div>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons + Social in one row on mobile */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8"
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-4 sm:mb-6"
             >
               <button
                 onClick={handleContactClick}
                 className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center"
               >
-                <Mail size={20} />
+                <Mail size={18} />
                 {t('hero.cta')}
               </button>
               <button
                 onClick={handleCVDownload}
                 className="btn-secondary flex items-center gap-2 w-full sm:w-auto justify-center"
               >
-                <Download size={20} />
+                <Download size={18} />
                 {t('hero.cv')}
               </button>
             </motion.div>
 
-            {/* Social Links */}
+            {/* Social Links - inline on mobile */}
             <motion.div
               variants={itemVariants}
-              className="flex items-center justify-center lg:justify-start gap-4 mb-8"
+              className="flex items-center justify-center lg:justify-start gap-3 mb-4 sm:mb-6"
             >
               <a
                 href="https://www.linkedin.com/in/borishenne/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-xl glass-card-hover text-gray-400 hover:text-primary-400 transition-all hover:scale-110"
+                className="p-2.5 sm:p-3 rounded-xl glass-card-hover text-gray-400 hover:text-primary-400 active:text-primary-400 transition-all"
                 aria-label="LinkedIn"
               >
-                <Linkedin size={22} />
+                <Linkedin size={20} />
               </a>
               <a
                 href="https://github.com/BorisHenne"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-xl glass-card-hover text-gray-400 hover:text-primary-400 transition-all hover:scale-110"
+                className="p-2.5 sm:p-3 rounded-xl glass-card-hover text-gray-400 hover:text-primary-400 active:text-primary-400 transition-all"
                 aria-label="GitHub"
               >
-                <Github size={22} />
+                <Github size={20} />
               </a>
             </motion.div>
 
-            {/* Tech tags */}
+            {/* Tech tags - horizontal scroll on mobile */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-wrap justify-center lg:justify-start gap-2"
+              className="flex flex-wrap justify-center lg:justify-start gap-1.5 sm:gap-2 max-w-full overflow-x-auto pb-2 scroll-x-touch"
             >
               {techTags.map((tag, index) => (
                 <motion.span
                   key={tag}
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ delay: 0.7 + index * 0.05 }}
-                  className="tag"
+                  transition={{ delay: 0.5 + index * 0.03 }}
+                  className="tag whitespace-nowrap"
                 >
                   {tag}
                 </motion.span>
@@ -323,12 +323,12 @@ function HeroComponent() {
       <motion.button
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.5, duration: 0.5 }}
+        transition={{ delay: 1.2, duration: 0.5 }}
         onClick={() => scrollToElement('about')}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-gray-500 hover:text-primary-400 transition-colors"
+        className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 text-gray-500 hover:text-primary-400 active:text-primary-400 transition-colors p-2"
         aria-label="Scroll vers le contenu"
       >
-        <ChevronDown size={32} className="animate-bounce" />
+        <ChevronDown size={28} className="animate-bounce" />
       </motion.button>
     </section>
   );

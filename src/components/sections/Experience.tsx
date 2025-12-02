@@ -28,75 +28,75 @@ function ExperienceComponent() {
   const visibleExperiences = showAll ? experiences : experiences.slice(0, 4);
 
   return (
-    <section ref={ref} id="experience" className="py-20 lg:py-32 relative">
+    <section ref={ref} id="experience" className="py-12 sm:py-20 lg:py-28 relative">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-8 sm:mb-12"
         >
           <h2 className="section-title">
             <span className="text-primary-500">&lt;</span>
             {t('experience.title')}
             <span className="text-primary-500"> /&gt;</span>
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full" />
+          <div className="w-16 sm:w-24 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full" />
         </motion.div>
 
         {/* Timeline */}
         <div className="relative">
           {/* Timeline line */}
-          <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary-500/50 via-primary-500/20 to-transparent" />
+          <div className="absolute left-3 sm:left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary-500/50 via-primary-500/20 to-transparent" />
 
           {/* Experience items */}
-          <div className="space-y-8">
+          <div className="space-y-4 sm:space-y-6">
             {visibleExperiences.map((exp, index) => (
               <motion.div
                 key={exp.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={isInView ? { opacity: 1, x: 0 } : {}}
-                transition={{ delay: index * 0.1 }}
-                className="relative pl-16"
+                transition={{ delay: index * 0.08 }}
+                className="relative pl-10 sm:pl-16"
               >
                 {/* Timeline dot */}
-                <div className="absolute left-4 top-2 timeline-dot" />
+                <div className="absolute left-1.5 sm:left-4 top-3 sm:top-2 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-primary-500 shadow-[0_0_8px_rgba(0,255,136,0.5)]" />
 
                 {/* Card */}
                 <div className={cn(
-                  'glass-card rounded-2xl p-6',
+                  'glass-card rounded-xl sm:rounded-2xl p-4 sm:p-5',
                   exp.isCurrent && 'border-primary-500/30'
                 )}>
                   {/* Current badge */}
                   {exp.isCurrent && (
-                    <span className="inline-block px-2 py-1 mb-3 text-xs font-mono rounded-full bg-primary-500/20 text-primary-400">
+                    <span className="inline-block px-2 py-0.5 mb-2 text-[10px] sm:text-xs font-mono rounded-full bg-primary-500/20 text-primary-400">
                       {t('experience.present')}
                     </span>
                   )}
 
                   {/* Title & Company */}
-                  <h3 className="font-display text-xl font-semibold text-white mb-1">
+                  <h3 className="font-display text-base sm:text-lg font-semibold text-white mb-0.5">
                     {t(`experience.positions.${exp.id}.title`)}
                   </h3>
-                  <p className="text-primary-400 font-medium mb-2">
+                  <p className="text-primary-400 font-medium text-sm mb-1.5">
                     {t(`experience.positions.${exp.id}.company`)}
                   </p>
 
-                  {/* Meta info */}
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-4">
+                  {/* Meta info - compact on mobile */}
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">
                     <span className="flex items-center gap-1">
-                      <Briefcase size={14} />
+                      <Briefcase size={12} />
                       {t(`experience.positions.${exp.id}.period`)}
                     </span>
                     <span className="flex items-center gap-1">
-                      <MapPin size={14} />
+                      <MapPin size={12} />
                       {t(`experience.positions.${exp.id}.location`)}
                     </span>
                   </div>
 
-                  {/* Description */}
-                  <p className="text-gray-400 text-sm leading-relaxed">
+                  {/* Description - hidden on very small mobile, shown on tap */}
+                  <p className="text-gray-400 text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-none">
                     {t(`experience.positions.${exp.id}.description`)}
                   </p>
                 </div>
@@ -104,13 +104,13 @@ function ExperienceComponent() {
             ))}
           </div>
 
-          {/* Show more/less button */}
+          {/* Show more/less button - touch friendly */}
           {experiences.length > 4 && (
             <motion.button
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}
               onClick={() => setShowAll(!showAll)}
-              className="mt-8 ml-16 flex items-center gap-2 text-primary-400 hover:text-primary-300 transition-colors font-mono text-sm"
+              className="mt-6 ml-10 sm:ml-16 flex items-center gap-2 text-primary-400 hover:text-primary-300 active:text-primary-300 transition-colors font-mono text-sm py-2 px-3 -ml-3 sm:ml-13 rounded-lg"
             >
               {showAll ? (
                 <>
