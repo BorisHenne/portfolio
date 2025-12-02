@@ -78,21 +78,22 @@
 
   /* Glass card with hover */
   .glass-card {
-    background: linear-gradient(135deg, 
-      rgba(0, 255, 136, 0.05), 
-      rgba(10, 15, 13, 0.8), 
+    background: linear-gradient(135deg,
+      rgba(0, 255, 136, 0.05),
+      rgba(10, 15, 13, 0.8),
       rgba(20, 184, 166, 0.05)
     );
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(0, 255, 136, 0.15);
     transition: all 0.3s ease;
+    padding: 2rem;
   }
 
   .glass-card:hover {
     border-color: rgba(0, 255, 136, 0.4);
-    box-shadow: 0 0 30px rgba(0, 255, 136, 0.15);
-    transform: translateY(-2px);
+    box-shadow: 0 0 40px rgba(0, 255, 136, 0.2);
+    transform: translateY(-4px);
   }
 
   /* Neon text effect */
@@ -153,17 +154,18 @@
 
   /* Skill bar */
   .skill-bar {
-    height: 6px;
+    height: 8px;
     background: rgba(0, 255, 136, 0.1);
-    border-radius: 3px;
+    border-radius: 4px;
     overflow: hidden;
   }
 
   .skill-bar-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--color-matrix-glow), var(--color-cyber-accent));
-    border-radius: 3px;
+    border-radius: 4px;
     transition: width 1s ease-out;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
   }
 
   /* Gradient text */
@@ -209,11 +211,17 @@
 
   /* Tag/Badge */
   .tag {
-    @apply px-3 py-1.5 rounded-full text-sm;
+    @apply px-4 py-2 rounded-full text-sm;
     font-family: 'JetBrains Mono', monospace;
     background: rgba(0, 255, 136, 0.1);
     color: var(--color-matrix-glow);
     border: 1px solid rgba(0, 255, 136, 0.2);
+    transition: all 0.2s ease;
+  }
+
+  .tag:hover {
+    background: rgba(0, 255, 136, 0.2);
+    transform: translateY(-1px);
   }
 
   /* Glass card with hover (improved) */
@@ -237,17 +245,18 @@
 
   /* Primary Button */
   .btn-primary {
-    @apply px-6 py-3.5 rounded-xl font-semibold text-base;
+    @apply px-8 py-4 rounded-xl font-semibold text-lg;
     background: linear-gradient(135deg, var(--color-matrix-glow), var(--color-cyber-accent));
     color: var(--color-matrix-dark);
     transition: all 0.3s ease;
     border: none;
     cursor: pointer;
+    letter-spacing: 0.02em;
   }
 
   .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 40px rgba(0, 255, 136, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 50px rgba(0, 255, 136, 0.4);
   }
 
   .btn-primary:active {
@@ -256,28 +265,30 @@
 
   /* Secondary Button */
   .btn-secondary {
-    @apply px-6 py-3.5 rounded-xl font-semibold text-base;
+    @apply px-8 py-4 rounded-xl font-semibold text-lg;
     background: transparent;
     color: var(--color-matrix-glow);
     border: 2px solid var(--color-matrix-glow);
     transition: all 0.3s ease;
     cursor: pointer;
+    letter-spacing: 0.02em;
   }
 
   .btn-secondary:hover {
     background: rgba(0, 255, 136, 0.1);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 40px rgba(0, 255, 136, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 50px rgba(0, 255, 136, 0.2);
   }
 
   /* Section titles */
   .section-title {
-    @apply text-4xl sm:text-5xl lg:text-6xl font-bold text-white;
+    @apply text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6;
     font-family: 'Space Mono', monospace;
+    letter-spacing: -0.02em;
   }
 
   .section-subtitle {
-    @apply text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto;
+    @apply text-xl sm:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed;
   }
 
   /* Grid background pattern */

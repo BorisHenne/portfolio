@@ -4,6 +4,7 @@ export default {
     home: 'Home',
     about: 'About',
     experience: 'Experience',
+    education: 'Education',
     skills: 'Skills',
     projects: 'Projects',
     contact: 'Contact',
