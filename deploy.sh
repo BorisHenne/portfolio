@@ -2,7 +2,8 @@
 # ============================================================
 # PORTFOLIO BORIS HENNÉ - SCRIPT DE DÉPLOIEMENT
 # ============================================================
-# Usage: ./deploy.sh
+# Usage local:  ./deploy.sh
+# Usage curl:   curl -fsSL https://raw.githubusercontent.com/BorisHenne/portfolio/main/deploy.sh | bash
 # ============================================================
 
 set -e
