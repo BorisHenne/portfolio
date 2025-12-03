@@ -63,11 +63,13 @@ print_success "Container arrêté"
 # 2. Sauvegarder les données
 print_step "Sauvegarde des données locales..."
 if [ -d "$INSTALL_DIR/data" ]; then
-    cp -r "$INSTALL_DIR/data" /tmp/portfolio-data-backup 2>/dev/null || true
+    $SUDO cp -r "$INSTALL_DIR/data" /tmp/portfolio-data-backup 2>/dev/null || true
+    $SUDO chown -R $(id -u):$(id -g) /tmp/portfolio-data-backup 2>/dev/null || true
     print_success "Données sauvegardées dans /tmp/portfolio-data-backup"
 fi
 if [ -f "$INSTALL_DIR/.env" ]; then
-    cp "$INSTALL_DIR/.env" /tmp/portfolio-env-backup 2>/dev/null || true
+    $SUDO cp "$INSTALL_DIR/.env" /tmp/portfolio-env-backup 2>/dev/null || true
+    $SUDO chown $(id -u):$(id -g) /tmp/portfolio-env-backup 2>/dev/null || true
     print_success "Fichier .env sauvegardé"
 fi
 
@@ -76,14 +78,17 @@ print_step "Récupération du code source via Git..."
 if [ -d "$INSTALL_DIR/.git" ]; then
     # Le repo existe déjà, faire un pull
     cd "$INSTALL_DIR"
+    # Nettoyer les fichiers avec sudo (créés par Docker avec un autre user)
+    $SUDO git clean -fd 2>/dev/null || true
+    $SUDO chown -R $(id -u):$(id -g) "$INSTALL_DIR" 2>/dev/null || true
     git fetch origin "$BRANCH"
     git reset --hard "origin/$BRANCH"
-    git clean -fd
     print_success "Code mis à jour (git pull)"
 else
     # Cloner le repo
-    mkdir -p "$INSTALL_DIR"
-    rm -rf "$INSTALL_DIR"/*
+    $SUDO mkdir -p "$INSTALL_DIR"
+    $SUDO rm -rf "$INSTALL_DIR"/*
+    $SUDO chown -R $(id -u):$(id -g) "$INSTALL_DIR"
     git clone --branch "$BRANCH" --single-branch "$REPO_URL" "$INSTALL_DIR"
     cd "$INSTALL_DIR"
     print_success "Code cloné depuis GitHub"
