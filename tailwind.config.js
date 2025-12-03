@@ -6,7 +6,7 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
-      // Palette verte claire et moderne
+      // Palette verte claire et moderne - Version éclaircie
       colors: {
         primary: {
           DEFAULT: '#00ff88',
@@ -35,18 +35,18 @@ module.exports = {
           900: '#042521',
         },
         dark: {
-          DEFAULT: '#0f1a14',
-          50: '#F0F4F2',
-          100: '#D9E2DD',
-          200: '#B3C5BB',
-          300: '#8DA899',
-          400: '#678B77',
-          500: '#4A6B55',
-          600: '#3A5444',
-          700: '#2A3D32',
-          800: '#1A2620',
-          900: '#0f1a14',
-          950: '#080F0B',
+          DEFAULT: '#1a2f24',
+          50: '#F5F7F6',
+          100: '#E8EDE9',
+          200: '#D1DBD3',
+          300: '#A8BCA9',
+          400: '#7F9D80',
+          500: '#567E57',
+          600: '#3D5C40',
+          700: '#2E4633',
+          800: '#233626',
+          900: '#1a2f24',
+          950: '#0F1B14',
         },
         accent: {
           purple: '#a855f7',

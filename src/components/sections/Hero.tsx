@@ -12,10 +12,12 @@ import {
 } from 'lucide-react';
 
 import { scrollToElement, downloadFile } from '../../utils';
+import { Spotlight } from '../ui/Spotlight';
 import { TextGenerateEffect } from '../ui/TextGenerateEffect';
 import { FlipWords } from '../ui/FlipWords';
 import { SparklesCore } from '../ui/SparklesCore';
 import { FloatingShapes } from '../ui/FloatingShapes';
+import { BackgroundBeams } from '../ui/BackgroundBeams';
 import { Button as MovingBorderButton } from '../ui/MovingBorder';
 
 const techTags = [
@@ -46,11 +48,31 @@ function HeroComponent() {
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-900"
     >
+      {/* Aceternity Spotlight Effects */}
+      <Spotlight
+        className="-top-40 left-0 md:left-60 md:-top-20"
+        fill="#00ff88"
+      />
+      <Spotlight
+        className="top-20 left-full -translate-x-[60%] h-[80vh] w-[50vw]"
+        fill="#14b8a6"
+      />
+      <Spotlight
+        className="top-1/2 -left-20 h-[60vh] w-[40vw]"
+        fill="#22d3ee"
+      />
+
       {/* Floating Geometric Shapes - Horizontal arrangement */}
       <FloatingShapes className="z-0" />
 
-      {/* Subtle gradient overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-dark-900/50 via-transparent to-dark-900/80 pointer-events-none z-[1]" />
+      {/* Background grid pattern */}
+      <div className="absolute inset-0 w-full h-full bg-dark-900 bg-grid-white/[0.03] pointer-events-none" />
+
+      {/* Radial gradient overlay for depth */}
+      <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-dark-900 [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]" />
+
+      {/* Background Beams */}
+      <BackgroundBeams className="opacity-50" />
 
       {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
