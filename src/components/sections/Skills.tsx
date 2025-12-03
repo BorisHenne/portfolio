@@ -1,6 +1,6 @@
 import { memo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 import {
   Database,
   Brain,
@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 
 import { cn } from '../../utils';
+import { GlowingTabs } from '../ui/AnimatedTabs';
+import { CardContainer, CardBody, CardItem } from '../ui/Card3D';
 
 // Skill categories with icons
 interface SkillCategory {
@@ -92,31 +94,63 @@ const skillCategories: SkillCategory[] = [
   },
 ];
 
-interface SkillBarProps {
+interface SkillCardProps {
   name: string;
   level: number;
   color: string;
-  delay: number;
-  isInView: boolean;
+  index: number;
 }
 
-function SkillBar({ name, level, color, delay, isInView }: SkillBarProps) {
+function SkillCard({ name, level, color, index }: SkillCardProps) {
   return (
-    <div className="mb-4 last:mb-0">
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-sm text-gray-300">{name}</span>
-        <span className="text-xs font-mono text-gray-500">{level}%</span>
-      </div>
-      <div className="skill-bar">
-        <motion.div
-          className="skill-bar-fill"
-          style={{ background: `linear-gradient(90deg, ${color}, ${color}88)` }}
-          initial={{ width: 0 }}
-          animate={isInView ? { width: `${level}%` } : { width: 0 }}
-          transition={{ duration: 1, delay, ease: 'easeOut' }}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ delay: index * 0.05 }}
+      className="group"
+    >
+      <div
+        className="relative p-4 rounded-xl bg-dark-900/50 border border-gray-800/50 hover:border-gray-700/50 transition-all duration-300 overflow-hidden"
+        style={{
+          boxShadow: `0 0 0 1px ${color}10`,
+        }}
+      >
+        {/* Glow effect on hover */}
+        <div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          style={{
+            background: `radial-gradient(circle at 50% 50%, ${color}10, transparent 70%)`,
+          }}
         />
+
+        {/* Content */}
+        <div className="relative z-10">
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-sm font-medium text-gray-200">{name}</span>
+            <span
+              className="text-xs font-mono px-2 py-0.5 rounded-full"
+              style={{ backgroundColor: `${color}20`, color }}
+            >
+              {level}%
+            </span>
+          </div>
+
+          {/* Progress bar */}
+          <div className="h-1.5 bg-dark-800 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full rounded-full"
+              style={{
+                background: `linear-gradient(90deg, ${color}, ${color}88)`,
+              }}
+              initial={{ width: 0 }}
+              animate={{ width: `${level}%` }}
+              transition={{ duration: 1, delay: 0.2 + index * 0.05, ease: 'easeOut' }}
+            />
+          </div>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -128,9 +162,22 @@ function SkillsComponent() {
 
   const activeSkills = skillCategories.find((cat) => cat.id === activeCategory);
 
+  const tabItems = skillCategories.map((cat) => ({
+    id: cat.id,
+    label: t(`skills.categories.${cat.id}`),
+    icon: <cat.icon size={16} />,
+    color: cat.color,
+  }));
+
   return (
     <section ref={ref} id="skills" className="py-20 lg:py-32 relative">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-dark-950">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,255,136,0.03),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(168,85,247,0.03),transparent_50%)]" />
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -138,76 +185,167 @@ function SkillsComponent() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <h2 className="section-title">
-            <span className="text-primary-500">&lt;</span>
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            className="inline-block px-4 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-400 text-sm font-mono mb-4"
+          >
+            {'<skills />'}
+          </motion.span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white mb-4">
             {t('skills.title')}
-            <span className="text-primary-500"> /&gt;</span>
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full" />
+          <p className="text-gray-400 max-w-2xl mx-auto">
+            Technologies et compétences maîtrisées au fil des années
+          </p>
         </motion.div>
 
-        {/* Category tabs */}
+        {/* Category tabs with glow effect */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.2 }}
-          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mb-12"
+          className="mb-12"
         >
-          {skillCategories.map((cat) => {
+          <GlowingTabs
+            tabs={tabItems}
+            activeTab={activeCategory}
+            onTabChange={setActiveCategory}
+          />
+        </motion.div>
+
+        {/* Skills display with 3D card effect */}
+        <AnimatePresence mode="wait">
+          {activeSkills && (
+            <motion.div
+              key={activeCategory}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+            >
+              <CardContainer containerClassName="w-full">
+                <CardBody className="w-full h-auto bg-dark-900/30 backdrop-blur-sm border border-gray-800/50 rounded-2xl p-6 sm:p-8">
+                  {/* Header */}
+                  <CardItem translateZ={50} className="w-full mb-8">
+                    <div className="flex items-center gap-4">
+                      <motion.div
+                        className="w-14 h-14 rounded-xl flex items-center justify-center"
+                        style={{ backgroundColor: `${activeSkills.color}15` }}
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                      >
+                        <activeSkills.icon size={28} style={{ color: activeSkills.color }} />
+                      </motion.div>
+                      <div>
+                        <h3 className="font-display text-2xl text-white">
+                          {t(`skills.categories.${activeSkills.id}`)}
+                        </h3>
+                        <p className="text-sm text-gray-400">
+                          {activeSkills.skills.length} compétences
+                        </p>
+                      </div>
+                    </div>
+                  </CardItem>
+
+                  {/* Skills grid */}
+                  <CardItem translateZ={30} className="w-full">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {activeSkills.skills.map((skill, index) => (
+                        <SkillCard
+                          key={skill.name}
+                          name={skill.name}
+                          level={skill.level}
+                          color={activeSkills.color}
+                          index={index}
+                        />
+                      ))}
+                    </div>
+                  </CardItem>
+
+                  {/* Footer stats */}
+                  <CardItem translateZ={20} className="w-full mt-6 pt-6 border-t border-gray-800/50">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-400">
+                        Niveau moyen
+                      </span>
+                      <span
+                        className="font-mono font-semibold"
+                        style={{ color: activeSkills.color }}
+                      >
+                        {Math.round(
+                          activeSkills.skills.reduce((a, b) => a + b.level, 0) /
+                            activeSkills.skills.length
+                        )}
+                        %
+                      </span>
+                    </div>
+                  </CardItem>
+                </CardBody>
+              </CardContainer>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Quick overview - all categories */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.4 }}
+          className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"
+        >
+          {skillCategories.map((cat, index) => {
+            const avgLevel = Math.round(
+              cat.skills.reduce((a, b) => a + b.level, 0) / cat.skills.length
+            );
             const Icon = cat.icon;
+
             return (
-              <button
+              <motion.button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
                 className={cn(
-                  'flex items-center justify-center gap-2 px-3 py-3 rounded-xl font-mono text-xs sm:text-sm transition-all',
+                  'relative p-4 rounded-xl transition-all duration-300 group overflow-hidden',
                   activeCategory === cat.id
-                    ? 'bg-primary-500/20 text-primary-400 border border-primary-500/50'
-                    : 'bg-dark-800/50 text-gray-400 border border-gray-700/50 hover:border-primary-500/30'
+                    ? 'bg-dark-800/80 border-2'
+                    : 'bg-dark-900/30 border border-gray-800/50 hover:border-gray-700/50'
                 )}
+                style={{
+                  borderColor: activeCategory === cat.id ? `${cat.color}50` : undefined,
+                }}
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + index * 0.05 }}
               >
-                <Icon size={16} style={{ color: cat.color }} />
-                <span className="hidden sm:inline">{t(`skills.categories.${cat.id}`)}</span>
-              </button>
+                {/* Background glow */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={{
+                    background: `radial-gradient(circle at 50% 100%, ${cat.color}10, transparent 70%)`,
+                  }}
+                />
+
+                <div className="relative z-10 text-center">
+                  <Icon
+                    size={24}
+                    className="mx-auto mb-2 transition-transform group-hover:scale-110"
+                    style={{ color: cat.color }}
+                  />
+                  <div className="text-xs text-gray-400 mb-1 truncate">
+                    {t(`skills.categories.${cat.id}`)}
+                  </div>
+                  <div
+                    className="text-lg font-mono font-bold"
+                    style={{ color: cat.color }}
+                  >
+                    {avgLevel}%
+                  </div>
+                </div>
+              </motion.button>
             );
           })}
         </motion.div>
-
-        {/* Skills display */}
-        {activeSkills && (
-          <motion.div
-            key={activeCategory}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="glass-card rounded-2xl p-8"
-          >
-            <div className="flex items-center gap-3 mb-8">
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center"
-                style={{ backgroundColor: `${activeSkills.color}20` }}
-              >
-                <activeSkills.icon size={24} style={{ color: activeSkills.color }} />
-              </div>
-              <h3 className="font-display text-2xl text-white">
-                {t(`skills.categories.${activeSkills.id}`)}
-              </h3>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-x-12 gap-y-0">
-              {activeSkills.skills.map((skill, index) => (
-                <SkillBar
-                  key={skill.name}
-                  name={skill.name}
-                  level={skill.level}
-                  color={activeSkills.color}
-                  delay={0.1 * index}
-                  isInView={isInView}
-                />
-              ))}
-            </div>
-          </motion.div>
-        )}
       </div>
     </section>
   );

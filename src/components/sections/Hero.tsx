@@ -1,6 +1,6 @@
-import { memo, useRef, useEffect } from 'react';
+import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion, useInView } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   MapPin,
   Download,
@@ -8,134 +8,31 @@ import {
   Linkedin,
   Github,
   ChevronDown,
+  Sparkles,
 } from 'lucide-react';
 
 import { scrollToElement, downloadFile } from '../../utils';
+import { Spotlight } from '../ui/Spotlight';
+import { TextGenerateEffect } from '../ui/TextGenerateEffect';
+import { FlipWords } from '../ui/FlipWords';
 import { SparklesCore } from '../ui/SparklesCore';
-
-// Animation variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: 'easeOut' },
-  },
-};
+import { BackgroundBeams } from '../ui/BackgroundBeams';
+import { Button as MovingBorderButton } from '../ui/MovingBorder';
 
 const techTags = [
   'SAP', 'ABAP', 'Fiori', 'Claude', 'GPT', 'React',
   'Make.com', 'Docker', 'Home Assistant', 'TypeScript'
 ];
 
-// Mobile-first responsive sizes
-const PROFILE_SIZES = {
-  mobile: 'w-32 h-32',
-  sm: 'sm:w-48 sm:h-48',
-  lg: 'lg:w-64 lg:h-64',
-};
+const flipRoles = [
+  'SAP Expert',
+  'AI Enthusiast',
+  'Full-Stack Developer',
+  'Automation Architect',
+];
 
 function HeroComponent() {
-  const { t } = useTranslation();
-  const ref = useRef<HTMLElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
-
-  // Particle animation
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let particles: Array<{
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      size: number;
-    }> = [];
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    // Create particles
-    const createParticles = () => {
-      particles = [];
-      const particleCount = Math.min(50, Math.floor(window.innerWidth / 20));
-      for (let i = 0; i < particleCount; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.5,
-          vy: (Math.random() - 0.5) * 0.5,
-          size: Math.random() * 2 + 1,
-        });
-      }
-    };
-
-    createParticles();
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      particles.forEach((particle, i) => {
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-
-        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
-        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
-
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(0, 255, 136, 0.5)';
-        ctx.fill();
-
-        // Draw connections
-        particles.slice(i + 1).forEach((p2) => {
-          const dx = particle.x - p2.x;
-          const dy = particle.y - p2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < 150) {
-            ctx.beginPath();
-            ctx.moveTo(particle.x, particle.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(0, 255, 136, ${0.15 * (1 - dist / 150)})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-        });
-      });
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, []);
+  const { t, i18n } = useTranslation();
 
   const handleContactClick = () => {
     scrollToElement('contact');
@@ -147,47 +44,72 @@ function HeroComponent() {
 
   return (
     <section
-      ref={ref}
       id="home"
-      className="relative min-h-screen flex items-center justify-center pt-14 sm:pt-16 lg:pt-20 overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-950"
     >
-      {/* Particle Canvas - hidden on mobile for performance */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 z-0 hidden sm:block"
-        style={{ opacity: 0.6 }}
+      {/* Spotlight Effect */}
+      <Spotlight
+        className="-top-40 left-0 md:left-60 md:-top-20"
+        fill="#00ff88"
+      />
+      <Spotlight
+        className="top-10 left-full -translate-x-[50%] h-[80vh] w-[50vw]"
+        fill="#14b8a6"
       />
 
-      {/* Grid Background */}
-      <div className="absolute inset-0 bg-grid opacity-30 sm:opacity-50" />
+      {/* Background Grid */}
+      <div className="absolute inset-0 w-full h-full bg-dark-950 bg-grid-white/[0.02] pointer-events-none" />
 
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-transparent to-dark-950" />
+      {/* Radial gradient overlay */}
+      <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-dark-950 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-20">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-          className="flex flex-col lg:flex-row items-center gap-6 sm:gap-12 lg:gap-16"
-        >
-          {/* Profile Image - optimisé mobile */}
-          <motion.div variants={itemVariants} className="relative flex-shrink-0">
-            <div className={`relative ${PROFILE_SIZES.mobile} ${PROFILE_SIZES.sm} ${PROFILE_SIZES.lg}`}>
-              {/* Glow effect - réduit sur mobile */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 opacity-15 sm:opacity-20 blur-xl sm:blur-2xl animate-pulse" />
+      {/* Background Beams */}
+      <BackgroundBeams className="opacity-40" />
 
-              {/* Border ring */}
-              <div className="absolute inset-0 rounded-full border-2 border-primary-500/40 sm:border-primary-500/50" />
+      {/* Main Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+
+          {/* Profile Image with Sparkles */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="relative flex-shrink-0"
+          >
+            <div className="relative w-40 h-40 sm:w-56 sm:h-56 lg:w-72 lg:h-72">
+              {/* Animated ring */}
+              <motion.div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: 'conic-gradient(from 0deg, #00ff88, #14b8a6, #22d3ee, #00ff88)',
+                  padding: '3px',
+                }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              >
+                <div className="w-full h-full rounded-full bg-dark-950" />
+              </motion.div>
+
+              {/* Sparkles around image */}
+              <div className="absolute inset-[-20%] z-0">
+                <SparklesCore
+                  className="w-full h-full"
+                  particleColor="#00ff88"
+                  particleDensity={40}
+                  minSize={0.4}
+                  maxSize={1.2}
+                  speed={0.5}
+                />
+              </div>
 
               {/* Image container */}
-              <div className="absolute inset-1.5 sm:inset-2 rounded-full overflow-hidden border-2 sm:border-4 border-dark-950">
+              <div className="absolute inset-2 sm:inset-3 rounded-full overflow-hidden border-2 border-dark-800 z-10">
                 <img
                   src="/profile.jpg"
                   alt="Boris Henné"
                   className="w-full h-full object-cover"
                   loading="eager"
-                  decoding="async"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%230a0f0d" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%2300ff88" font-size="32" font-family="monospace">BH</text></svg>';
@@ -195,157 +117,181 @@ function HeroComponent() {
                 />
               </div>
 
-              {/* Decorative elements - hidden on mobile */}
-              <motion.div
-                className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 w-5 h-5 sm:w-8 sm:h-8 border-2 border-primary-500 rounded-full hidden sm:block"
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-              <motion.div
-                className="absolute -bottom-1 -left-1 sm:-bottom-2 sm:-left-2 w-4 h-4 sm:w-6 sm:h-6 bg-primary-500/30 rounded-full hidden sm:block"
-                animate={{ scale: [1, 1.3, 1] }}
-                transition={{ duration: 2.5, repeat: Infinity }}
-              />
-
-              {/* Status badge - compact sur mobile */}
+              {/* Status badge */}
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.5, type: 'spring' }}
-                className="absolute -bottom-0.5 -right-0.5 sm:-bottom-2 sm:-right-2 px-2 py-0.5 sm:px-3 sm:py-1.5 rounded-full bg-dark-900/95 backdrop-blur-sm border border-red-500/40 shadow-lg shadow-red-500/10"
+                className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 z-20"
               >
-                <span className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs font-semibold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-sm shadow-red-500" />
-                  <span className="text-red-400 uppercase tracking-wide">{t('hero.status')}</span>
-                </span>
+                <div className="px-3 py-1.5 rounded-full bg-dark-900/95 backdrop-blur-sm border border-red-500/40 shadow-lg shadow-red-500/20">
+                  <span className="flex items-center gap-1.5 text-xs font-semibold">
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-sm shadow-red-500" />
+                    <span className="text-red-400 uppercase tracking-wide">{t('hero.status')}</span>
+                  </span>
+                </div>
               </motion.div>
             </div>
           </motion.div>
 
-          {/* Content - typographie améliorée mobile */}
+          {/* Text Content */}
           <div className="flex-1 text-center lg:text-left max-w-2xl">
-            <motion.p
-              variants={itemVariants}
-              className="text-primary-400 font-mono text-xs sm:text-sm mb-2 sm:mb-3"
+            {/* Greeting */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="flex items-center justify-center lg:justify-start gap-2 mb-4"
             >
-              <span className="opacity-60">{'>'}</span> {t('hero.greeting')}
-            </motion.p>
+              <Sparkles className="w-4 h-4 text-primary-400" />
+              <span className="text-primary-400 font-mono text-sm">
+                {t('hero.greeting')}
+              </span>
+            </motion.div>
 
-            <motion.h1
-              variants={itemVariants}
-              className="relative font-display text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-2 sm:mb-3 tracking-tight"
+            {/* Name with Text Generate Effect */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
             >
-              <span className="relative z-10">{t('hero.name')}</span>
-              {/* Sparkles effect autour du nom */}
-              <SparklesCore
-                className="absolute inset-0 -inset-x-4 -inset-y-2 z-0 pointer-events-none"
-                particleColor="#00ff88"
-                particleDensity={60}
-                minSize={0.6}
-                maxSize={1.4}
-                speed={0.8}
+              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4 tracking-tight">
+                <TextGenerateEffect
+                  words={t('hero.name')}
+                  className="inline"
+                  duration={0.8}
+                />
+              </h1>
+            </motion.div>
+
+            {/* Dynamic Role with FlipWords */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-6 h-12 flex items-center justify-center lg:justify-start"
+            >
+              <span className="text-gray-400 mr-2">{i18n.language === 'fr' ? "Je suis" : "I'm a"}</span>
+              <FlipWords
+                words={flipRoles}
+                duration={3000}
+                className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-secondary-400 to-accent-cyan"
               />
-            </motion.h1>
+            </motion.div>
 
-            <motion.h2
-              variants={itemVariants}
-              className="text-base sm:text-xl lg:text-2xl font-semibold text-gradient mb-2 sm:mb-3 leading-tight"
-            >
-              {t('hero.title')}
-            </motion.h2>
-
+            {/* Subtitle */}
             <motion.p
-              variants={itemVariants}
-              className="text-gray-400 text-sm sm:text-base lg:text-lg mb-4 sm:mb-5 leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+              className="text-gray-400 text-base sm:text-lg mb-6 leading-relaxed max-w-xl mx-auto lg:mx-0"
             >
               {t('hero.subtitle')}
             </motion.p>
 
+            {/* Location */}
             <motion.div
-              variants={itemVariants}
-              className="inline-flex items-center gap-1.5 sm:gap-2 text-gray-400 mb-5 sm:mb-6 px-3 py-1.5 rounded-full bg-dark-800/50 border border-gray-700/30"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="inline-flex items-center gap-2 text-gray-400 mb-8 px-4 py-2 rounded-full bg-dark-800/50 border border-gray-700/30 backdrop-blur-sm"
             >
-              <MapPin size={14} className="text-primary-500 sm:w-4 sm:h-4" />
-              <span className="font-mono text-xs sm:text-sm">{t('hero.location')}</span>
+              <MapPin size={16} className="text-primary-500" />
+              <span className="font-mono text-sm">{t('hero.location')}</span>
             </motion.div>
 
-            {/* CTA Buttons - grid mobile, flex desktop */}
+            {/* CTA Buttons */}
             <motion.div
-              variants={itemVariants}
-              className="grid grid-cols-2 sm:flex sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-2.5 sm:gap-4 mb-5 sm:mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8"
             >
-              <button
+              <MovingBorderButton
+                borderRadius="1.5rem"
+                className="px-8 py-4 text-white font-semibold"
                 onClick={handleContactClick}
-                className="btn-primary flex items-center gap-2 justify-center text-sm sm:text-base py-3 sm:py-4 px-4 sm:px-8 touch-manipulation"
+                as="button"
               >
-                <Mail size={16} className="sm:w-[18px] sm:h-[18px]" />
-                <span>{t('hero.cta')}</span>
-              </button>
+                <Mail className="w-5 h-5 mr-2" />
+                {t('hero.cta')}
+              </MovingBorderButton>
+
               <button
                 onClick={handleCVDownload}
-                className="btn-secondary flex items-center gap-2 justify-center text-sm sm:text-base py-3 sm:py-4 px-4 sm:px-8 touch-manipulation"
+                className="group flex items-center gap-2 px-8 py-4 rounded-full bg-dark-800/50 border border-gray-700/50 text-gray-300 hover:text-white hover:border-primary-500/50 hover:bg-primary-500/10 transition-all duration-300"
               >
-                <Download size={16} className="sm:w-[18px] sm:h-[18px]" />
-                <span>{t('hero.cv')}</span>
+                <Download size={20} className="group-hover:animate-bounce" />
+                <span className="font-semibold">{t('hero.cv')}</span>
               </button>
             </motion.div>
 
-            {/* Social Links + Tech tags - combined row on mobile */}
+            {/* Social Links */}
             <motion.div
-              variants={itemVariants}
-              className="flex items-center justify-center lg:justify-start gap-2 sm:gap-3 mb-5 sm:mb-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+              className="flex items-center justify-center lg:justify-start gap-3 mb-8"
             >
               <a
                 href="https://www.linkedin.com/in/borishenne/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 sm:p-3 rounded-xl bg-dark-800/60 border border-gray-700/40 text-gray-400 hover:text-primary-400 hover:border-primary-500/40 active:text-primary-400 transition-all touch-manipulation"
+                className="group p-3 rounded-xl bg-dark-800/60 border border-gray-700/40 text-gray-400 hover:text-[#0077b5] hover:border-[#0077b5]/40 hover:bg-[#0077b5]/10 transition-all duration-300"
                 aria-label="LinkedIn"
               >
-                <Linkedin size={18} className="sm:w-5 sm:h-5" />
+                <Linkedin size={22} />
               </a>
               <a
                 href="https://github.com/BorisHenne"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 sm:p-3 rounded-xl bg-dark-800/60 border border-gray-700/40 text-gray-400 hover:text-primary-400 hover:border-primary-500/40 active:text-primary-400 transition-all touch-manipulation"
+                className="group p-3 rounded-xl bg-dark-800/60 border border-gray-700/40 text-gray-400 hover:text-white hover:border-gray-500/40 hover:bg-gray-500/10 transition-all duration-300"
                 aria-label="GitHub"
               >
-                <Github size={18} className="sm:w-5 sm:h-5" />
+                <Github size={22} />
               </a>
             </motion.div>
 
-            {/* Tech tags - wrap with gap, no scroll */}
+            {/* Tech Tags */}
             <motion.div
-              variants={itemVariants}
-              className="flex flex-wrap justify-center lg:justify-start gap-1.5 sm:gap-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.1 }}
+              className="flex flex-wrap justify-center lg:justify-start gap-2"
             >
               {techTags.map((tag, index) => (
                 <motion.span
                   key={tag}
                   initial={{ opacity: 0, scale: 0.8 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ delay: 0.5 + index * 0.03 }}
-                  className="px-2.5 py-1 sm:px-4 sm:py-2 rounded-full text-[11px] sm:text-sm font-mono bg-primary-500/10 text-primary-400 border border-primary-500/20 whitespace-nowrap"
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 1.2 + index * 0.05 }}
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  className="px-3 py-1.5 rounded-full text-xs font-mono bg-primary-500/10 text-primary-400 border border-primary-500/20 hover:bg-primary-500/20 hover:border-primary-500/40 transition-all duration-200 cursor-default"
                 >
                   {tag}
                 </motion.span>
               ))}
             </motion.div>
           </div>
-        </motion.div>
+        </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll Indicator */}
       <motion.button
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.2, duration: 0.5 }}
+        transition={{ delay: 1.5 }}
         onClick={() => scrollToElement('about')}
-        className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 text-gray-500 hover:text-primary-400 active:text-primary-400 transition-colors p-2"
-        aria-label="Scroll vers le contenu"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-gray-500 hover:text-primary-400 transition-colors p-2 group"
+        aria-label="Scroll to content"
       >
-        <ChevronDown size={28} className="animate-bounce" />
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <ChevronDown size={32} className="group-hover:text-primary-400" />
+        </motion.div>
       </motion.button>
     </section>
   );
