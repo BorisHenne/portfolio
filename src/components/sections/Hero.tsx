@@ -68,7 +68,7 @@ function HeroComponent() {
               <motion.div
                 className="absolute inset-0 rounded-full"
                 style={{
-                  background: 'conic-gradient(from 0deg, #00D4FF, #E91E8C, #7B2CBF, #00D4FF)',
+                  background: 'conic-gradient(from 0deg, #00ff88, #14b8a6, #22d3ee, #00ff88)',
                   padding: '3px',
                 }}
                 animate={{ rotate: 360 }}
@@ -81,7 +81,7 @@ function HeroComponent() {
               <div className="absolute inset-[-20%] z-0">
                 <SparklesCore
                   className="w-full h-full"
-                  particleColor="#00D4FF"
+                  particleColor="#00ff88"
                   particleDensity={40}
                   minSize={0.4}
                   maxSize={1.2}
@@ -98,7 +98,7 @@ function HeroComponent() {
                   loading="eager"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%230D1B2A" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%2300D4FF" font-size="32" font-family="monospace">BH</text></svg>';
+                    target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%230f1a14" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%2300ff88" font-size="32" font-family="monospace">BH</text></svg>';
                   }}
                 />
               </div>

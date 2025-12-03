@@ -39,7 +39,7 @@ export const MovingBorder = ({
         <MovingBorderGradient duration={duration} rx={rx} ry={ry}>
           <div
             className={cn(
-              "h-20 w-20 bg-[radial-gradient(#00D4FF_40%,transparent_60%)] opacity-[0.8]",
+              "h-20 w-20 bg-[radial-gradient(#00ff88_40%,transparent_60%)] opacity-[0.8]",
               borderClassName
             )}
           />
@@ -166,7 +166,7 @@ export const Button = ({
             position: "absolute",
             inset: "-100%",
             background:
-              "conic-gradient(from 0deg, transparent, #00D4FF, #E91E8C, transparent 40%)",
+              "conic-gradient(from 0deg, transparent, #00ff88, #14b8a6, transparent 40%)",
           }}
         />
       </div>

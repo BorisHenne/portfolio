@@ -65,10 +65,10 @@ export const BackgroundBeams = ({ className }: { className?: string }) => {
                 delay: Math.random() * 10,
               }}
             >
-              <stop stopColor="#00D4FF" stopOpacity="0" />
-              <stop stopColor="#00D4FF" />
-              <stop offset="32.5%" stopColor="#E91E8C" />
-              <stop offset="100%" stopColor="#7B2CBF" stopOpacity="0" />
+              <stop stopColor="#00ff88" stopOpacity="0" />
+              <stop stopColor="#00ff88" />
+              <stop offset="32.5%" stopColor="#14b8a6" />
+              <stop offset="100%" stopColor="#22d3ee" stopOpacity="0" />
             </motion.linearGradient>
           ))}
         </defs>
@@ -111,7 +111,7 @@ export const BackgroundBeamsWithCollision = ({
     <div
       ref={parentRef}
       className={cn(
-        "absolute inset-0 overflow-hidden [--gradient-start:#00D4FF] [--gradient-end:#E91E8C]",
+        "absolute inset-0 overflow-hidden [--gradient-start:#00ff88] [--gradient-end:#14b8a6]",
         className
       )}
     >

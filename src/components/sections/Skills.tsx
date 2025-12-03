@@ -27,7 +27,7 @@ const skillCategories: SkillCategory[] = [
   {
     id: 'sap',
     icon: Database,
-    color: '#00D4FF',
+    color: '#00ff88',
     skills: [
       { name: 'ABAP / ABAP-OO', level: 95 },
       { name: 'SAP Fiori / UI5', level: 90 },
