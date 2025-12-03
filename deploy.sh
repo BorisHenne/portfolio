@@ -73,26 +73,15 @@ if [ -f "$INSTALL_DIR/.env" ]; then
     print_success "Fichier .env sauvegardé"
 fi
 
-# 3. Récupérer le code via Git
+# 3. Récupérer le code via Git (suppression complète + clone frais)
 print_step "Récupération du code source via Git..."
-if [ -d "$INSTALL_DIR/.git" ]; then
-    # Le repo existe déjà, faire un pull
-    cd "$INSTALL_DIR"
-    # Nettoyer les fichiers avec sudo (créés par Docker avec un autre user)
-    $SUDO git clean -fd 2>/dev/null || true
-    $SUDO chown -R $(id -u):$(id -g) "$INSTALL_DIR" 2>/dev/null || true
-    git fetch origin "$BRANCH"
-    git reset --hard "origin/$BRANCH"
-    print_success "Code mis à jour (git pull)"
-else
-    # Cloner le repo
-    $SUDO mkdir -p "$INSTALL_DIR"
-    $SUDO rm -rf "$INSTALL_DIR"/*
-    $SUDO chown -R $(id -u):$(id -g) "$INSTALL_DIR"
-    git clone --branch "$BRANCH" --single-branch "$REPO_URL" "$INSTALL_DIR"
-    cd "$INSTALL_DIR"
-    print_success "Code cloné depuis GitHub"
-fi
+cd /tmp
+$SUDO rm -rf "$INSTALL_DIR"
+$SUDO mkdir -p "$INSTALL_DIR"
+$SUDO chown -R $(id -u):$(id -g) "$INSTALL_DIR"
+git clone --branch "$BRANCH" --single-branch "$REPO_URL" "$INSTALL_DIR"
+cd "$INSTALL_DIR"
+print_success "Code cloné depuis GitHub (branche: $BRANCH)"
 
 # 4. Restaurer les données
 print_step "Restauration des données..."
