@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from 'react';
+import { memo, useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import {
@@ -8,6 +8,24 @@ import {
   Server,
   Zap,
   Wrench,
+  Code2,
+  Smartphone,
+  FileText,
+  Puzzle,
+  ArrowRightLeft,
+  Bot,
+  MessageSquare,
+  GitBranch,
+  Terminal,
+  Link2,
+  Layers,
+  Palette,
+  Wand2,
+  Globe,
+  Home,
+  Cloud,
+  HardDrive,
+  Container,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -16,11 +34,17 @@ import { GlowingTabs } from '../ui/AnimatedTabs';
 import { CardContainer, CardBody, CardItem } from '../ui/Card3D';
 
 // Skill categories with icons
+interface Skill {
+  name: string;
+  level: number;
+  icon: LucideIcon;
+}
+
 interface SkillCategory {
   id: string;
   icon: LucideIcon;
   color: string;
-  skills: Array<{ name: string; level: number }>;
+  skills: Skill[];
 }
 
 const skillCategories: SkillCategory[] = [
@@ -29,12 +53,12 @@ const skillCategories: SkillCategory[] = [
     icon: Database,
     color: '#00ff88',
     skills: [
-      { name: 'ABAP / ABAP-OO', level: 95 },
-      { name: 'SAP Fiori / UI5', level: 90 },
-      { name: 'CDS / OData', level: 88 },
-      { name: 'BAPI / RFC / IDoc', level: 92 },
-      { name: 'Adobe LiveCycle', level: 85 },
-      { name: 'Enhancement Points', level: 90 },
+      { name: 'ABAP / ABAP-OO', level: 95, icon: Code2 },
+      { name: 'SAP Fiori / UI5', level: 90, icon: Smartphone },
+      { name: 'CDS / OData', level: 88, icon: Database },
+      { name: 'BAPI / RFC / IDoc', level: 92, icon: ArrowRightLeft },
+      { name: 'Adobe LiveCycle', level: 85, icon: FileText },
+      { name: 'Enhancement Points', level: 90, icon: Puzzle },
     ],
   },
   {
@@ -42,11 +66,11 @@ const skillCategories: SkillCategory[] = [
     icon: Brain,
     color: '#a855f7',
     skills: [
-      { name: 'Claude (Anthropic)', level: 95 },
-      { name: 'ChatGPT / GPT-4', level: 90 },
-      { name: 'GitHub Copilot', level: 88 },
-      { name: 'Prompt Engineering', level: 90 },
-      { name: 'MCP (Model Context Protocol)', level: 85 },
+      { name: 'Claude (Anthropic)', level: 95, icon: Bot },
+      { name: 'ChatGPT / GPT-4', level: 90, icon: MessageSquare },
+      { name: 'GitHub Copilot', level: 88, icon: GitBranch },
+      { name: 'Prompt Engineering', level: 90, icon: Terminal },
+      { name: 'MCP (Model Context Protocol)', level: 85, icon: Link2 },
     ],
   },
   {
@@ -54,10 +78,10 @@ const skillCategories: SkillCategory[] = [
     icon: Layout,
     color: '#14b8a6',
     skills: [
-      { name: 'React / Next.js', level: 88 },
-      { name: 'TypeScript', level: 82 },
-      { name: 'Tailwind CSS', level: 90 },
-      { name: 'Framer Motion', level: 85 },
+      { name: 'React / Next.js', level: 88, icon: Layers },
+      { name: 'TypeScript', level: 82, icon: Code2 },
+      { name: 'Tailwind CSS', level: 90, icon: Palette },
+      { name: 'Framer Motion', level: 85, icon: Wand2 },
     ],
   },
   {
@@ -65,10 +89,10 @@ const skillCategories: SkillCategory[] = [
     icon: Server,
     color: '#22d3ee',
     skills: [
-      { name: 'Node.js', level: 80 },
-      { name: 'Python', level: 72 },
-      { name: 'REST API', level: 90 },
-      { name: 'SQL / Databases', level: 88 },
+      { name: 'Node.js', level: 80, icon: Server },
+      { name: 'Python', level: 72, icon: Code2 },
+      { name: 'REST API', level: 90, icon: Globe },
+      { name: 'SQL / Databases', level: 88, icon: Database },
     ],
   },
   {
@@ -76,9 +100,9 @@ const skillCategories: SkillCategory[] = [
     icon: Zap,
     color: '#f472b6',
     skills: [
-      { name: 'Make.com', level: 92 },
-      { name: 'Home Assistant', level: 88 },
-      { name: 'API Integration', level: 90 },
+      { name: 'Make.com', level: 92, icon: Zap },
+      { name: 'Home Assistant', level: 88, icon: Home },
+      { name: 'API Integration', level: 90, icon: Link2 },
     ],
   },
   {
@@ -86,10 +110,10 @@ const skillCategories: SkillCategory[] = [
     icon: Wrench,
     color: '#fbbf24',
     skills: [
-      { name: 'Git / GitHub', level: 88 },
-      { name: 'Docker', level: 82 },
-      { name: 'Cloudflare', level: 85 },
-      { name: 'Linux / NAS', level: 80 },
+      { name: 'Git / GitHub', level: 88, icon: GitBranch },
+      { name: 'Docker', level: 82, icon: Container },
+      { name: 'Cloudflare', level: 85, icon: Cloud },
+      { name: 'Linux / NAS', level: 80, icon: HardDrive },
     ],
   },
 ];
@@ -99,9 +123,10 @@ interface SkillCardProps {
   level: number;
   color: string;
   index: number;
+  icon: LucideIcon;
 }
 
-function SkillCard({ name, level, color, index }: SkillCardProps) {
+function SkillCard({ name, level, color, index, icon: Icon }: SkillCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -126,8 +151,15 @@ function SkillCard({ name, level, color, index }: SkillCardProps) {
 
         {/* Content */}
         <div className="relative z-10">
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-sm font-medium text-gray-200">{name}</span>
+          <div className="flex items-center gap-3 mb-3">
+            {/* Skill icon */}
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110"
+              style={{ backgroundColor: `${color}15`, border: `1px solid ${color}30` }}
+            >
+              <Icon size={16} style={{ color }} />
+            </div>
+            <span className="text-sm font-medium text-gray-200 flex-1">{name}</span>
             <span
               className="text-xs font-mono px-2 py-0.5 rounded-full"
               style={{ backgroundColor: `${color}20`, color }}
@@ -159,6 +191,15 @@ function SkillsComponent() {
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const [activeCategory, setActiveCategory] = useState('sap');
+
+  // Check for tab selection from About section
+  useEffect(() => {
+    const storedTab = sessionStorage.getItem('skillTab');
+    if (storedTab && skillCategories.some(cat => cat.id === storedTab)) {
+      setActiveCategory(storedTab);
+      sessionStorage.removeItem('skillTab');
+    }
+  }, []);
 
   const activeSkills = skillCategories.find((cat) => cat.id === activeCategory);
 
@@ -257,6 +298,7 @@ function SkillsComponent() {
                           level={skill.level}
                           color={activeSkills.color}
                           index={index}
+                          icon={skill.icon}
                         />
                       ))}
                     </div>

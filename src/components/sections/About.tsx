@@ -12,15 +12,18 @@ import {
   Award,
   MapPin,
   Play,
+  ArrowRight,
 } from 'lucide-react';
 
-// Colors correlated with skills categories
+import { scrollToElement } from '../../utils';
+
+// Colors correlated with skills categories - with link to skill tab
 const interests = [
-  { key: 'dev', icon: Code, color: '#00ff88' },           // Primary - matches SAP/Frontend
-  { key: 'ai', icon: Brain, color: '#a855f7' },           // Purple - matches IA & LLM
-  { key: 'automation', icon: Zap, color: '#fbbf24' },     // Yellow - matches Automatisation
-  { key: 'domotics', icon: Home, color: '#18bcf2' },      // Cyan - Home Assistant
-  { key: 'music', icon: Music, color: '#ec4899' },        // Pink - unique passion
+  { key: 'dev', icon: Code, color: '#00ff88', skillTab: 'frontend' },     // Links to Frontend
+  { key: 'ai', icon: Brain, color: '#a855f7', skillTab: 'ai' },            // Links to AI & LLM
+  { key: 'automation', icon: Zap, color: '#fbbf24', skillTab: 'automation' }, // Links to Automation
+  { key: 'domotics', icon: Home, color: '#18bcf2', skillTab: 'tools' },    // Links to Tools
+  { key: 'music', icon: Music, color: '#ec4899', skillTab: null },         // No link (unique passion)
 ];
 
 const stats = [
@@ -115,29 +118,49 @@ function AboutComponent() {
               {t('about.interests')}
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {interests.map((interest, index) => (
-                <motion.div
-                  key={interest.key}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ delay: 0.5 + index * 0.08 }}
-                  className="glass-card rounded-xl p-3 sm:p-4 flex flex-col items-center text-center gap-2 sm:gap-3 group hover:scale-105 transition-all duration-300"
-                  style={{ borderColor: `${interest.color}30` }}
-                >
-                  <div
-                    className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center transition-all group-hover:scale-110"
-                    style={{ backgroundColor: `${interest.color}15`, border: `1px solid ${interest.color}40` }}
+              {interests.map((interest, index) => {
+                const handleClick = () => {
+                  if (interest.skillTab) {
+                    // Store the tab to activate in sessionStorage
+                    sessionStorage.setItem('skillTab', interest.skillTab);
+                    scrollToElement('skills');
+                  }
+                };
+
+                return (
+                  <motion.div
+                    key={interest.key}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                    transition={{ delay: 0.5 + index * 0.08 }}
+                    onClick={handleClick}
+                    className={`glass-card rounded-xl p-3 sm:p-4 flex flex-col items-center text-center gap-2 sm:gap-3 group hover:scale-105 transition-all duration-300 ${
+                      interest.skillTab ? 'cursor-pointer' : ''
+                    }`}
+                    style={{ borderColor: `${interest.color}30` }}
                   >
-                    <interest.icon
-                      size={24}
-                      style={{ color: interest.color }}
-                    />
-                  </div>
-                  <span className="text-xs sm:text-sm text-gray-300 group-hover:text-white transition-colors font-medium">
-                    {t(`about.interestsList.${interest.key}`)}
-                  </span>
-                </motion.div>
-              ))}
+                    <div
+                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center transition-all group-hover:scale-110"
+                      style={{ backgroundColor: `${interest.color}15`, border: `1px solid ${interest.color}40` }}
+                    >
+                      <interest.icon
+                        size={24}
+                        style={{ color: interest.color }}
+                      />
+                    </div>
+                    <span className="text-xs sm:text-sm text-gray-300 group-hover:text-white transition-colors font-medium">
+                      {t(`about.interestsList.${interest.key}`)}
+                    </span>
+                    {/* Arrow indicator for linked skills */}
+                    {interest.skillTab && (
+                      <ArrowRight
+                        size={14}
+                        className="text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all"
+                      />
+                    )}
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.div>
         </div>
