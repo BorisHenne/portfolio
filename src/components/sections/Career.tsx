@@ -168,12 +168,12 @@ function CareerComponent() {
         <motion.div
           className="absolute -top-1/4 -right-1/4 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl"
           animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity }}
+          transition={{ duration: 8, repeat: Infinity as number }}
         />
         <motion.div
           className="absolute -bottom-1/4 -left-1/4 w-96 h-96 bg-secondary-500/5 rounded-full blur-3xl"
           animate={{ scale: [1.2, 1, 1.2], opacity: [0.5, 0.3, 0.5] }}
-          transition={{ duration: 8, repeat: Infinity }}
+          transition={{ duration: 8, repeat: Infinity as number }}
         />
       </div>
 
@@ -193,7 +193,7 @@ function CareerComponent() {
           <motion.div
             className="w-20 sm:w-28 h-1.5 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full"
             animate={{ boxShadow: ['0 0 10px rgba(0,255,136,0.3)', '0 0 25px rgba(0,255,136,0.6)', '0 0 10px rgba(0,255,136,0.3)'] }}
-            transition={{ duration: 2, repeat: Infinity }}
+            transition={{ duration: 2, repeat: Infinity as number }}
           />
         </motion.div>
 
@@ -228,7 +228,7 @@ function CareerComponent() {
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-400 opacity-20"
                     animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
-                    transition={{ duration: 3, repeat: Infinity }}
+                    transition={{ duration: 3, repeat: Infinity as number }}
                   />
                 )}
                 {/* Sparkle effect for active */}
@@ -473,7 +473,8 @@ function CareerComponent() {
                       boxShadow: isHighlighted
                         ? `0 0 40px ${category.color}40, 0 0 80px ${category.color}20, inset 0 0 30px ${category.color}10`
                         : `0 0 20px ${category.color}10`,
-                      ringColor: isHighlighted ? category.color : undefined
+                      // Ring color set via CSS variable
+                      ['--tw-ring-color' as string]: isHighlighted ? category.color : undefined
                     }}
                     whileHover={{
                       scale: 1.02,
@@ -535,7 +536,7 @@ function CareerComponent() {
                               <motion.div
                                 className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
                                 animate={{ x: ['-100%', '200%'] }}
-                                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                                transition={{ duration: 2, repeat: Infinity as number, repeatDelay: 3 }}
                               />
                             </motion.div>
                           </div>

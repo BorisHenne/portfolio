@@ -76,12 +76,12 @@ function AboutComponent() {
         <motion.div
           className="absolute top-1/4 -right-1/4 w-80 h-80 bg-primary-500/5 rounded-full blur-3xl"
           animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 10, repeat: Infinity }}
+          transition={{ duration: 10, repeat: Infinity as number }}
         />
         <motion.div
           className="absolute bottom-1/4 -left-1/4 w-80 h-80 bg-secondary-500/5 rounded-full blur-3xl"
           animate={{ scale: [1.2, 1, 1.2], opacity: [0.4, 0.2, 0.4] }}
-          transition={{ duration: 10, repeat: Infinity }}
+          transition={{ duration: 10, repeat: Infinity as number }}
         />
       </div>
 
