@@ -138,7 +138,7 @@ function NavbarComponent() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-dark-950/90 backdrop-blur-sm lg:hidden"
+              className="fixed inset-0 bg-dark-950 lg:hidden"
               onClick={closeMenu}
             />
 
