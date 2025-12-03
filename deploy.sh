@@ -2,8 +2,13 @@
 # ============================================================
 # PORTFOLIO BORIS HENNÉ - SCRIPT DE DÉPLOIEMENT
 # ============================================================
-# Usage local:  ./deploy.sh
-# Usage curl:   curl -fsSL https://raw.githubusercontent.com/BorisHenne/portfolio/main/deploy.sh | bash
+# Usage:  ./deploy.sh [branche]
+# Curl:   curl -fsSL https://raw.githubusercontent.com/BorisHenne/portfolio/main/deploy.sh | bash -s -- [branche]
+#
+# Exemples:
+#   ./deploy.sh                     # Déploie depuis main
+#   ./deploy.sh develop             # Déploie depuis develop
+#   curl ... | bash -s -- develop   # Déploie depuis develop via curl
 # ============================================================
 
 set -e
@@ -23,13 +28,15 @@ print_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 # Configuration
 INSTALL_DIR="/volume1/docker/site-perso"
 REPO_URL="https://github.com/BorisHenne/portfolio.git"
-BRANCH="main"
+BRANCH="${1:-main}"  # Argument optionnel, défaut: main
 GOOGLE_CLIENT_ID="${VITE_GOOGLE_CLIENT_ID:-}"
 
 echo ""
 echo -e "${GREEN}╔════════════════════════════════════════════════════════╗${NC}"
 echo -e "${GREEN}║     PORTFOLIO BORIS HENNÉ - DÉPLOIEMENT                ║${NC}"
 echo -e "${GREEN}╚════════════════════════════════════════════════════════╝${NC}"
+echo ""
+echo -e "  ${CYAN}Branche:${NC} $BRANCH"
 echo ""
 
 # Vérifier si on est root ou sudo disponible
