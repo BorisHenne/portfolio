@@ -6,63 +6,65 @@ module.exports = {
   darkMode: 'class',
   theme: {
     extend: {
-      // Couleurs personnalisées du portfolio
+      // Nouvelle palette SAP TechEd inspired - plus claire et moderne
       colors: {
         primary: {
-          DEFAULT: '#00ff88',
-          50: '#e6fff4',
-          100: '#b3ffe0',
-          200: '#80ffcc',
-          300: '#4dffb8',
-          400: '#1affa4',
-          500: '#00ff88',
-          600: '#00cc6d',
-          700: '#009952',
-          800: '#006637',
-          900: '#00331c',
+          DEFAULT: '#00D4FF',
+          50: '#E6FAFF',
+          100: '#B3F0FF',
+          200: '#80E6FF',
+          300: '#4DDBFF',
+          400: '#1AD1FF',
+          500: '#00D4FF',
+          600: '#00A8CC',
+          700: '#007D99',
+          800: '#005266',
+          900: '#002633',
         },
         secondary: {
-          DEFAULT: '#14b8a6',
-          50: '#e7faf8',
-          100: '#b8f0ea',
-          200: '#89e6dc',
-          300: '#5adcce',
-          400: '#2bd2c0',
-          500: '#14b8a6',
-          600: '#109385',
-          700: '#0c6e64',
-          800: '#084943',
-          900: '#042422',
+          DEFAULT: '#E91E8C',
+          50: '#FDE7F3',
+          100: '#FABCDE',
+          200: '#F791C9',
+          300: '#F466B4',
+          400: '#F13B9F',
+          500: '#E91E8C',
+          600: '#BA1870',
+          700: '#8C1254',
+          800: '#5D0C38',
+          900: '#2F061C',
         },
         dark: {
-          DEFAULT: '#0a0f0d',
-          50: '#f5f6f5',
-          100: '#e1e4e2',
-          200: '#c3c9c5',
-          300: '#a5aea8',
-          400: '#87938b',
-          500: '#69786e',
-          600: '#546058',
-          700: '#3f4842',
-          800: '#2a302c',
-          900: '#151816',
-          950: '#0a0f0d',
+          DEFAULT: '#0D1B2A',
+          50: '#E8EDF2',
+          100: '#C5D1DC',
+          200: '#9FB3C5',
+          300: '#7995AE',
+          400: '#537797',
+          500: '#3D5A80',
+          600: '#2E4460',
+          700: '#1F2E40',
+          800: '#152232',
+          900: '#0D1B2A',
+          950: '#080F17',
         },
         accent: {
-          purple: '#a855f7',
-          cyan: '#22d3ee',
-          pink: '#f472b6',
-          yellow: '#fbbf24',
+          purple: '#7B2CBF',
+          cyan: '#00D4FF',
+          pink: '#E91E8C',
+          yellow: '#FFD60A',
+          teal: '#2EC4B6',
+          orange: '#FF6B35',
         },
       },
-      
+
       // Typography personnalisée
       fontFamily: {
         sans: ['IBM Plex Sans', ...defaultTheme.fontFamily.sans],
         display: ['Space Mono', 'IBM Plex Sans', ...defaultTheme.fontFamily.sans],
         mono: ['JetBrains Mono', 'Space Mono', ...defaultTheme.fontFamily.mono],
       },
-      
+
       // Animations
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out',
@@ -95,8 +97,8 @@ module.exports = {
           '100%': { opacity: '1', transform: 'translateX(0)' },
         },
         pulseGlow: {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(0, 255, 136, 0.3)' },
-          '50%': { boxShadow: '0 0 40px rgba(0, 255, 136, 0.6)' },
+          '0%, 100%': { boxShadow: '0 0 20px rgba(0, 212, 255, 0.3)' },
+          '50%': { boxShadow: '0 0 40px rgba(0, 212, 255, 0.6)' },
         },
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
@@ -112,7 +114,7 @@ module.exports = {
         },
         'blink-caret': {
           '0%, 100%': { borderColor: 'transparent' },
-          '50%': { borderColor: '#00ff88' },
+          '50%': { borderColor: '#00D4FF' },
         },
         spotlight: {
           '0%': {
@@ -134,34 +136,35 @@ module.exports = {
           '100%': { transform: 'rotate(215deg) translateX(-500px)', opacity: '0' },
         },
       },
-      
+
       // Backdrop blur
       backdropBlur: {
         xs: '2px',
       },
-      
-      // Box shadows personnalisées
+
+      // Box shadows personnalisées - cyan glow
       boxShadow: {
-        'glow-sm': '0 0 10px rgba(0, 255, 136, 0.3)',
-        'glow': '0 0 20px rgba(0, 255, 136, 0.4)',
-        'glow-lg': '0 0 40px rgba(0, 255, 136, 0.5)',
-        'inner-glow': 'inset 0 0 20px rgba(0, 255, 136, 0.1)',
+        'glow-sm': '0 0 10px rgba(0, 212, 255, 0.3)',
+        'glow': '0 0 20px rgba(0, 212, 255, 0.4)',
+        'glow-lg': '0 0 40px rgba(0, 212, 255, 0.5)',
+        'glow-pink': '0 0 20px rgba(233, 30, 140, 0.4)',
+        'inner-glow': 'inset 0 0 20px rgba(0, 212, 255, 0.1)',
       },
-      
+
       // Background images
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'grid-pattern': 'linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px)',
+        'grid-pattern': 'linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px)',
       },
-      
+
       // Spacing
       spacing: {
         '18': '4.5rem',
         '88': '22rem',
         '128': '32rem',
       },
-      
+
       // Z-index
       zIndex: {
         '60': '60',

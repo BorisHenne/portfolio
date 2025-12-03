@@ -45,23 +45,23 @@ function HeroComponent() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-950"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-900"
     >
       {/* Spotlight Effect */}
       <Spotlight
         className="-top-40 left-0 md:left-60 md:-top-20"
-        fill="#00ff88"
+        fill="#00D4FF"
       />
       <Spotlight
         className="top-10 left-full -translate-x-[50%] h-[80vh] w-[50vw]"
-        fill="#14b8a6"
+        fill="#E91E8C"
       />
 
       {/* Background Grid */}
-      <div className="absolute inset-0 w-full h-full bg-dark-950 bg-grid-white/[0.02] pointer-events-none" />
+      <div className="absolute inset-0 w-full h-full bg-dark-900 bg-grid-white/[0.02] pointer-events-none" />
 
       {/* Radial gradient overlay */}
-      <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-dark-950 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+      <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-dark-900 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
 
       {/* Background Beams */}
       <BackgroundBeams className="opacity-40" />
@@ -82,20 +82,20 @@ function HeroComponent() {
               <motion.div
                 className="absolute inset-0 rounded-full"
                 style={{
-                  background: 'conic-gradient(from 0deg, #00ff88, #14b8a6, #22d3ee, #00ff88)',
+                  background: 'conic-gradient(from 0deg, #00D4FF, #E91E8C, #7B2CBF, #00D4FF)',
                   padding: '3px',
                 }}
                 animate={{ rotate: 360 }}
                 transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
               >
-                <div className="w-full h-full rounded-full bg-dark-950" />
+                <div className="w-full h-full rounded-full bg-dark-900" />
               </motion.div>
 
               {/* Sparkles around image */}
               <div className="absolute inset-[-20%] z-0">
                 <SparklesCore
                   className="w-full h-full"
-                  particleColor="#00ff88"
+                  particleColor="#00D4FF"
                   particleDensity={40}
                   minSize={0.4}
                   maxSize={1.2}
@@ -104,7 +104,7 @@ function HeroComponent() {
               </div>
 
               {/* Image container */}
-              <div className="absolute inset-2 sm:inset-3 rounded-full overflow-hidden border-2 border-dark-800 z-10">
+              <div className="absolute inset-2 sm:inset-3 rounded-full overflow-hidden border-2 border-dark-700 z-10">
                 <img
                   src="/profile.jpg"
                   alt="Boris Henné"
@@ -112,7 +112,7 @@ function HeroComponent() {
                   loading="eager"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
-                    target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%230a0f0d" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%2300ff88" font-size="32" font-family="monospace">BH</text></svg>';
+                    target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%230D1B2A" width="100" height="100"/><text x="50" y="55" text-anchor="middle" fill="%2300D4FF" font-size="32" font-family="monospace">BH</text></svg>';
                   }}
                 />
               </div>
@@ -124,10 +124,10 @@ function HeroComponent() {
                 transition={{ delay: 0.5, type: 'spring' }}
                 className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 z-20"
               >
-                <div className="px-3 py-1.5 rounded-full bg-dark-900/95 backdrop-blur-sm border border-red-500/40 shadow-lg shadow-red-500/20">
+                <div className="px-3 py-1.5 rounded-full bg-dark-800/95 backdrop-blur-sm border border-secondary-500/40 shadow-lg shadow-secondary-500/20">
                   <span className="flex items-center gap-1.5 text-xs font-semibold">
-                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-sm shadow-red-500" />
-                    <span className="text-red-400 uppercase tracking-wide">{t('hero.status')}</span>
+                    <span className="w-2 h-2 rounded-full bg-secondary-500 animate-pulse shadow-sm shadow-secondary-500" />
+                    <span className="text-secondary-400 uppercase tracking-wide">{t('hero.status')}</span>
                   </span>
                 </div>
               </motion.div>
