@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 
 import { scrollToElement, downloadFile } from '../../utils';
+import { SparklesCore } from '../ui/SparklesCore';
 
 // Animation variants
 const containerVariants = {
@@ -232,9 +233,18 @@ function HeroComponent() {
 
             <motion.h1
               variants={itemVariants}
-              className="font-display text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-2 sm:mb-3 tracking-tight"
+              className="relative font-display text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-2 sm:mb-3 tracking-tight"
             >
-              {t('hero.name')}
+              <span className="relative z-10">{t('hero.name')}</span>
+              {/* Sparkles effect autour du nom */}
+              <SparklesCore
+                className="absolute inset-0 -inset-x-4 -inset-y-2 z-0 pointer-events-none"
+                particleColor="#00ff88"
+                particleDensity={60}
+                minSize={0.6}
+                maxSize={1.4}
+                speed={0.8}
+              />
             </motion.h1>
 
             <motion.h2
