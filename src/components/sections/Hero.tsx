@@ -138,7 +138,7 @@ function HeroComponent() {
                 <div className="px-3 py-1.5 rounded-full bg-dark-800/95 backdrop-blur-sm border border-red-500/40 shadow-lg shadow-red-500/20">
                   <span className="flex items-center gap-1.5 text-xs font-semibold">
                     <span className="w-2 h-2 rounded-full bg-red-500 shadow-sm shadow-red-500" />
-                    <span className="text-red-400 uppercase tracking-wide">En contrat</span>
+                    <span className="text-red-400 uppercase tracking-wide">{t('hero.status')}</span>
                   </span>
                 </div>
               </motion.div>
