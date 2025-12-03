@@ -2,13 +2,13 @@
 # ============================================================
 # PORTFOLIO BORIS HENNÉ - SCRIPT DE DÉPLOIEMENT
 # ============================================================
-# Usage:  ./deploy.sh [branche]
-# Curl:   curl -fsSL https://raw.githubusercontent.com/BorisHenne/portfolio/main/deploy.sh | bash -s -- [branche]
+# Usage:  sudo ./deploy.sh [branche]
+# Curl:   curl -fsSL https://raw.githubusercontent.com/BorisHenne/portfolio/main/deploy.sh | sudo bash -s -- [branche]
 #
 # Exemples:
-#   ./deploy.sh                     # Déploie depuis main
-#   ./deploy.sh develop             # Déploie depuis develop
-#   curl ... | bash -s -- develop   # Déploie depuis develop via curl
+#   sudo ./deploy.sh                     # Déploie depuis main
+#   sudo ./deploy.sh develop             # Déploie depuis develop
+#   curl ... | sudo bash -s -- develop   # Déploie depuis develop via curl
 # ============================================================
 
 set -e
@@ -39,46 +39,38 @@ echo ""
 echo -e "  ${CYAN}Branche:${NC} $BRANCH"
 echo ""
 
-# Vérifier si on est root ou sudo disponible
+# Relancer en root si nécessaire
 if [ "$EUID" -ne 0 ]; then
-    if ! command -v sudo &> /dev/null; then
-        print_error "Ce script doit être exécuté en root ou avec sudo"
-        exit 1
-    fi
-    SUDO="sudo"
-else
-    SUDO=""
+    print_step "Relancement en root..."
+    exec sudo bash "$0" "$@"
 fi
 
 # 1. Arrêter le container existant
 print_step "Arrêt du container existant..."
 if [ -d "$INSTALL_DIR" ]; then
     cd "$INSTALL_DIR"
-    $SUDO docker compose down 2>/dev/null || true
+    docker compose down 2>/dev/null || true
 fi
-$SUDO docker stop site-perso 2>/dev/null || true
-$SUDO docker rm site-perso 2>/dev/null || true
+docker stop site-perso 2>/dev/null || true
+docker rm site-perso 2>/dev/null || true
 print_success "Container arrêté"
 
 # 2. Sauvegarder les données
 print_step "Sauvegarde des données locales..."
 if [ -d "$INSTALL_DIR/data" ]; then
-    $SUDO cp -r "$INSTALL_DIR/data" /tmp/portfolio-data-backup 2>/dev/null || true
-    $SUDO chown -R $(id -u):$(id -g) /tmp/portfolio-data-backup 2>/dev/null || true
+    cp -r "$INSTALL_DIR/data" /tmp/portfolio-data-backup 2>/dev/null || true
     print_success "Données sauvegardées dans /tmp/portfolio-data-backup"
 fi
 if [ -f "$INSTALL_DIR/.env" ]; then
-    $SUDO cp "$INSTALL_DIR/.env" /tmp/portfolio-env-backup 2>/dev/null || true
-    $SUDO chown $(id -u):$(id -g) /tmp/portfolio-env-backup 2>/dev/null || true
+    cp "$INSTALL_DIR/.env" /tmp/portfolio-env-backup 2>/dev/null || true
     print_success "Fichier .env sauvegardé"
 fi
 
 # 3. Récupérer le code via Git (suppression complète + clone frais)
 print_step "Récupération du code source via Git..."
 cd /tmp
-$SUDO rm -rf "$INSTALL_DIR"
-$SUDO mkdir -p "$INSTALL_DIR"
-$SUDO chown -R $(id -u):$(id -g) "$INSTALL_DIR"
+rm -rf "$INSTALL_DIR"
+mkdir -p "$INSTALL_DIR"
 git clone --branch "$BRANCH" --single-branch "$REPO_URL" "$INSTALL_DIR"
 cd "$INSTALL_DIR"
 print_success "Code cloné depuis GitHub (branche: $BRANCH)"
@@ -114,17 +106,17 @@ fi
 
 # 6. Construire et démarrer
 print_step "Construction et démarrage du container..."
-$SUDO docker compose up -d --build --force-recreate
+docker compose up -d --build --force-recreate
 print_success "Container démarré"
 
 # 7. Vérifier le status
 print_step "Vérification du status..."
 sleep 5
-if $SUDO docker ps | grep -q site-perso; then
+if docker ps | grep -q site-perso; then
     print_success "Container en cours d'exécution"
 else
     print_error "Le container ne semble pas fonctionner"
-    $SUDO docker compose logs --tail=30
+    docker compose logs --tail=30
     exit 1
 fi
 
