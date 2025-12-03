@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 
 import { scrollToElement } from '../../utils';
-import { Spotlight } from '../ui/Spotlight';
 
 // Colors correlated with skills categories - with link to skill tab
 const interests = [
@@ -60,30 +59,8 @@ function AboutComponent() {
 
   return (
     <section ref={ref} id="about" className="py-16 sm:py-24 lg:py-32 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-dark-950/60" />
-      <Spotlight
-        className="top-0 right-0 h-[60vh] w-[40vw]"
-        fill="#14b8a6"
-      />
-      <Spotlight
-        className="bottom-0 -left-20 h-[50vh] w-[35vw]"
-        fill="#a855f7"
-      />
-
-      {/* Animated gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/4 -right-1/4 w-80 h-80 bg-primary-500/5 rounded-full blur-3xl"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 10, repeat: Infinity }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 -left-1/4 w-80 h-80 bg-secondary-500/5 rounded-full blur-3xl"
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.4, 0.2, 0.4] }}
-          transition={{ duration: 10, repeat: Infinity }}
-        />
-      </div>
+      {/* Subtle background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-900/50 to-dark-950" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section title */}
@@ -98,7 +75,7 @@ function AboutComponent() {
             {t('about.title')}
             <span className="text-primary-500"> /&gt;</span>
           </h2>
-          <div className="w-20 sm:w-28 h-1.5 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full" />
+          <div className="w-16 sm:w-20 h-1 bg-primary-500 mx-auto rounded-full" />
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
@@ -140,14 +117,13 @@ function AboutComponent() {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <h3 className="font-display text-lg sm:text-xl lg:text-2xl font-semibold text-white mb-4 sm:mb-6">
+            <h3 className="text-base sm:text-lg font-semibold text-white mb-4">
               {t('about.interests')}
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
               {interests.map((interest, index) => {
                 const handleClick = () => {
                   if (interest.skillTab) {
-                    // Store the skill category to highlight and navigate to Career section's skills tab
                     sessionStorage.setItem('careerTab', 'skills');
                     sessionStorage.setItem('skillHighlight', interest.skillTab);
                     scrollToElement('career');
@@ -157,59 +133,25 @@ function AboutComponent() {
                 return (
                   <motion.div
                     key={interest.key}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ delay: 0.5 + index * 0.08 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ delay: 0.4 + index * 0.05 }}
                     onClick={handleClick}
-                    whileHover={{ scale: 1.05, y: -4 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`relative overflow-hidden rounded-xl p-3 sm:p-4 flex flex-col items-center text-center gap-2 sm:gap-3 group transition-all duration-300 bg-dark-900/80 backdrop-blur-sm border ${
-                      interest.skillTab ? 'cursor-pointer' : ''
+                    className={`rounded-lg p-3 flex items-center gap-2.5 bg-dark-800/60 border border-dark-700/50 transition-colors hover:border-dark-600 ${
+                      interest.skillTab ? 'cursor-pointer hover:bg-dark-800/80' : ''
                     }`}
-                    style={{
-                      borderColor: `${interest.color}25`,
-                      boxShadow: `0 0 20px ${interest.color}08`
-                    }}
                   >
-                    {/* Glow effect on hover */}
-                    <motion.div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{
-                        background: `radial-gradient(circle at 50% 0%, ${interest.color}20, transparent 70%)`
-                      }}
-                    />
-                    <motion.div
-                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center transition-all relative z-10"
-                      style={{
-                        backgroundColor: `${interest.color}15`,
-                        border: `2px solid ${interest.color}40`,
-                        boxShadow: `0 0 15px ${interest.color}20`
-                      }}
-                      whileHover={{ rotate: [0, -5, 5, 0], scale: 1.1 }}
-                      transition={{ duration: 0.3 }}
+                    <div
+                      className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                      style={{ backgroundColor: `${interest.color}15` }}
                     >
-                      <interest.icon
-                        size={24}
-                        style={{ color: interest.color }}
-                      />
-                    </motion.div>
-                    <span className="relative z-10 text-xs sm:text-sm text-gray-300 group-hover:text-white transition-colors font-medium">
+                      <interest.icon size={16} style={{ color: interest.color }} />
+                    </div>
+                    <span className="text-sm text-gray-300">
                       {t(`about.interestsList.${interest.key}`)}
                     </span>
-                    {/* Arrow indicator for linked skills */}
                     {interest.skillTab && (
-                      <motion.div
-                        className="relative z-10 flex items-center gap-1 text-gray-500 group-hover:text-white transition-all"
-                        whileHover={{ x: 3 }}
-                      >
-                        <span className="text-[10px] font-mono opacity-0 group-hover:opacity-100 transition-opacity">
-                          {t('about.viewSkills') || 'View'}
-                        </span>
-                        <ArrowRight
-                          size={14}
-                          className="group-hover:translate-x-1 transition-transform"
-                        />
-                      </motion.div>
+                      <ArrowRight size={14} className="ml-auto text-gray-600" />
                     )}
                   </motion.div>
                 );
@@ -218,14 +160,14 @@ function AboutComponent() {
           </motion.div>
         </div>
 
-        {/* SAP TechEd 2025 Section - Integrated */}
+        {/* SAP TechEd 2025 Section */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-12 sm:mt-16 lg:mt-20"
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-10 sm:mt-14"
         >
-          <div className="glass-card rounded-xl sm:rounded-2xl p-5 sm:p-8 lg:p-10 border-primary-500/30">
+          <div className="rounded-xl p-5 sm:p-6 lg:p-8 bg-dark-800/60 border border-dark-700/50">
             <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
               {/* Video Container */}
               <div ref={videoContainerRef} className="lg:w-1/2">
@@ -247,9 +189,9 @@ function AboutComponent() {
                   </video>
 
                   {/* Play overlay hint */}
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-primary-500/80 flex items-center justify-center backdrop-blur-sm">
-                      <Play size={32} className="text-dark-950 ml-1" />
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="w-12 h-12 rounded-full bg-dark-900/80 flex items-center justify-center">
+                      <Play size={20} className="text-white ml-0.5" />
                     </div>
                   </div>
                 </div>
@@ -257,39 +199,33 @@ function AboutComponent() {
 
               {/* Content */}
               <div className="lg:w-1/2 flex flex-col justify-center">
-                {/* Icon + Title */}
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br from-primary-500/20 to-secondary-500/20 flex items-center justify-center border border-primary-500/30 flex-shrink-0">
-                    <span className="text-xl sm:text-2xl font-bold text-primary-400 font-mono">SAP</span>
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-primary-500/15 flex items-center justify-center flex-shrink-0">
+                    <span className="text-sm font-bold text-primary-400 font-mono">SAP</span>
                   </div>
                   <div>
-                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white font-display">
+                    <h3 className="text-lg sm:text-xl font-semibold text-white">
                       {t('teched.eventTitle')}
                     </h3>
-                    <div className="flex items-center gap-1.5 text-primary-400 text-sm sm:text-base mt-1">
-                      <MapPin size={16} />
+                    <div className="flex items-center gap-1 text-primary-400 text-sm mt-0.5">
+                      <MapPin size={14} />
                       <span>{t('teched.location')}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Description */}
-                <p className="text-gray-400 text-sm sm:text-base lg:text-lg leading-relaxed mb-5 sm:mb-6">
+                <p className="text-gray-400 text-sm leading-relaxed mb-4">
                   {t('teched.description')}
                 </p>
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2">
-                  {techEdTags.map((tag, index) => (
-                    <motion.span
+                <div className="flex flex-wrap gap-1.5">
+                  {techEdTags.map((tag) => (
+                    <span
                       key={tag}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                      transition={{ delay: 0.7 + index * 0.05 }}
-                      className="tag"
+                      className="px-2.5 py-1 text-xs rounded-md bg-primary-500/10 text-primary-400 border border-primary-500/20"
                     >
                       {tag}
-                    </motion.span>
+                    </span>
                   ))}
                 </div>
               </div>
