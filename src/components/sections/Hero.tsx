@@ -128,17 +128,17 @@ function HeroComponent() {
                 />
               </div>
 
-              {/* Status badge */}
+              {/* Status badge - Busy/Under contract */}
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.5, type: 'spring' }}
                 className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 z-20"
               >
-                <div className="px-3 py-1.5 rounded-full bg-dark-800/95 backdrop-blur-sm border border-secondary-500/40 shadow-lg shadow-secondary-500/20">
+                <div className="px-3 py-1.5 rounded-full bg-dark-800/95 backdrop-blur-sm border border-red-500/40 shadow-lg shadow-red-500/20">
                   <span className="flex items-center gap-1.5 text-xs font-semibold">
-                    <span className="w-2 h-2 rounded-full bg-secondary-500 animate-pulse shadow-sm shadow-secondary-500" />
-                    <span className="text-secondary-400 uppercase tracking-wide">{t('hero.status')}</span>
+                    <span className="w-2 h-2 rounded-full bg-red-500 shadow-sm shadow-red-500" />
+                    <span className="text-red-400 uppercase tracking-wide">En contrat</span>
                   </span>
                 </div>
               </motion.div>
