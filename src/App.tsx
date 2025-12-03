@@ -46,13 +46,17 @@ export default function App() {
         isReady ? 'opacity-100' : 'opacity-0'
       }`}
     >
-      {/* Grid pattern background */}
-      <div className="fixed inset-0 bg-grid opacity-50 pointer-events-none" />
+      {/* Ultra dark background base */}
+      <div className="fixed inset-0 bg-gradient-to-b from-dark-950 via-dark-900 to-dark-950" />
 
-      {/* Gradient orbs for ambiance */}
+      {/* Grid pattern background - subtle */}
+      <div className="fixed inset-0 bg-grid opacity-30 pointer-events-none" />
+
+      {/* Gradient orbs for ambiance - more subtle */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-1/4 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 -right-1/4 w-96 h-96 bg-secondary-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 -left-1/4 w-[500px] h-[500px] bg-primary-500/5 rounded-full blur-[100px]" />
+        <div className="absolute bottom-1/4 -right-1/4 w-[500px] h-[500px] bg-secondary-500/5 rounded-full blur-[100px]" />
+        <div className="absolute top-3/4 left-1/2 w-[400px] h-[400px] bg-accent-purple/3 rounded-full blur-[80px]" />
       </div>
 
       {/* Main content */}

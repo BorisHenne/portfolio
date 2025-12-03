@@ -46,8 +46,11 @@ function HeroComponent() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-900"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-950"
     >
+      {/* Ultra dark base */}
+      <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-900 to-dark-950" />
+
       {/* Aceternity Spotlight Effects */}
       <Spotlight
         className="-top-40 left-0 md:left-60 md:-top-20"
@@ -66,10 +69,10 @@ function HeroComponent() {
       <FloatingShapes className="z-0" />
 
       {/* Background grid pattern */}
-      <div className="absolute inset-0 w-full h-full bg-dark-900 bg-grid-white/[0.03] pointer-events-none" />
+      <div className="absolute inset-0 w-full h-full bg-dark-950 bg-grid-white/[0.02] pointer-events-none" />
 
       {/* Radial gradient overlay for depth */}
-      <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-dark-900 [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]" />
+      <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-dark-950 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
 
       {/* Background Beams */}
       <BackgroundBeams className="opacity-50" />

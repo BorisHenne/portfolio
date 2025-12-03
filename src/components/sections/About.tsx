@@ -16,13 +16,14 @@ import {
 } from 'lucide-react';
 
 import { scrollToElement } from '../../utils';
+import { Spotlight } from '../ui/Spotlight';
 
 // Colors correlated with skills categories - with link to skill tab
 const interests = [
-  { key: 'dev', icon: Code, color: '#00ff88', skillTab: 'frontend' },     // Links to Frontend
+  { key: 'dev', icon: Code, color: '#00ff88', skillTab: 'sap' },           // Links to SAP (main dev skill)
   { key: 'ai', icon: Brain, color: '#a855f7', skillTab: 'ai' },            // Links to AI & LLM
   { key: 'automation', icon: Zap, color: '#fbbf24', skillTab: 'automation' }, // Links to Automation
-  { key: 'domotics', icon: Home, color: '#18bcf2', skillTab: 'tools' },    // Links to Tools
+  { key: 'domotics', icon: Home, color: '#18bcf2', skillTab: 'frontend' }, // Links to Frontend (React/TS)
   { key: 'music', icon: Music, color: '#ec4899', skillTab: null },         // No link (unique passion)
 ];
 
@@ -58,8 +59,33 @@ function AboutComponent() {
   }, [isVideoInView]);
 
   return (
-    <section ref={ref} id="about" className="py-16 sm:py-24 lg:py-32 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={ref} id="about" className="py-16 sm:py-24 lg:py-32 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-dark-950/60" />
+      <Spotlight
+        className="top-0 right-0 h-[60vh] w-[40vw]"
+        fill="#14b8a6"
+      />
+      <Spotlight
+        className="bottom-0 -left-20 h-[50vh] w-[35vw]"
+        fill="#a855f7"
+      />
+
+      {/* Animated gradient orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-1/4 -right-1/4 w-80 h-80 bg-primary-500/5 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
+          transition={{ duration: 10, repeat: Infinity }}
+        />
+        <motion.div
+          className="absolute bottom-1/4 -left-1/4 w-80 h-80 bg-secondary-500/5 rounded-full blur-3xl"
+          animate={{ scale: [1.2, 1, 1.2], opacity: [0.4, 0.2, 0.4] }}
+          transition={{ duration: 10, repeat: Infinity }}
+        />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -135,29 +161,55 @@ function AboutComponent() {
                     animate={isInView ? { opacity: 1, scale: 1 } : {}}
                     transition={{ delay: 0.5 + index * 0.08 }}
                     onClick={handleClick}
-                    className={`glass-card rounded-xl p-3 sm:p-4 flex flex-col items-center text-center gap-2 sm:gap-3 group hover:scale-105 transition-all duration-300 ${
+                    whileHover={{ scale: 1.05, y: -4 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`relative overflow-hidden rounded-xl p-3 sm:p-4 flex flex-col items-center text-center gap-2 sm:gap-3 group transition-all duration-300 bg-dark-900/80 backdrop-blur-sm border ${
                       interest.skillTab ? 'cursor-pointer' : ''
                     }`}
-                    style={{ borderColor: `${interest.color}30` }}
+                    style={{
+                      borderColor: `${interest.color}25`,
+                      boxShadow: `0 0 20px ${interest.color}08`
+                    }}
                   >
-                    <div
-                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center transition-all group-hover:scale-110"
-                      style={{ backgroundColor: `${interest.color}15`, border: `1px solid ${interest.color}40` }}
+                    {/* Glow effect on hover */}
+                    <motion.div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{
+                        background: `radial-gradient(circle at 50% 0%, ${interest.color}20, transparent 70%)`
+                      }}
+                    />
+                    <motion.div
+                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center transition-all relative z-10"
+                      style={{
+                        backgroundColor: `${interest.color}15`,
+                        border: `2px solid ${interest.color}40`,
+                        boxShadow: `0 0 15px ${interest.color}20`
+                      }}
+                      whileHover={{ rotate: [0, -5, 5, 0], scale: 1.1 }}
+                      transition={{ duration: 0.3 }}
                     >
                       <interest.icon
                         size={24}
                         style={{ color: interest.color }}
                       />
-                    </div>
-                    <span className="text-xs sm:text-sm text-gray-300 group-hover:text-white transition-colors font-medium">
+                    </motion.div>
+                    <span className="relative z-10 text-xs sm:text-sm text-gray-300 group-hover:text-white transition-colors font-medium">
                       {t(`about.interestsList.${interest.key}`)}
                     </span>
                     {/* Arrow indicator for linked skills */}
                     {interest.skillTab && (
-                      <ArrowRight
-                        size={14}
-                        className="text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all"
-                      />
+                      <motion.div
+                        className="relative z-10 flex items-center gap-1 text-gray-500 group-hover:text-white transition-all"
+                        whileHover={{ x: 3 }}
+                      >
+                        <span className="text-[10px] font-mono opacity-0 group-hover:opacity-100 transition-opacity">
+                          {t('about.viewSkills') || 'View'}
+                        </span>
+                        <ArrowRight
+                          size={14}
+                          className="group-hover:translate-x-1 transition-transform"
+                        />
+                      </motion.div>
                     )}
                   </motion.div>
                 );

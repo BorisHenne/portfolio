@@ -7,25 +7,25 @@ interface FloatingShapesProps {
 }
 
 export const FloatingShapes = ({ className }: FloatingShapesProps) => {
-  // Horizontal arrangement of shapes - Green theme - Brighter version
+  // Horizontal arrangement of shapes - Dark Green theme - Subtle version
   const shapes = [
     // Top row - horizontal alignment
-    { type: 'pill', x: '5%', y: '15%', width: '180px', height: '80px', color: '#00ff88', opacity: 0.25, delay: 0 },
-    { type: 'pill', x: '25%', y: '12%', width: '220px', height: '90px', color: '#14b8a6', opacity: 0.2, delay: 0.2 },
-    { type: 'circle', x: '50%', y: '18%', width: '100px', height: '100px', color: '#22d3ee', opacity: 0.18, delay: 0.4 },
-    { type: 'pill', x: '70%', y: '10%', width: '200px', height: '85px', color: '#00ff88', opacity: 0.2, delay: 0.6 },
+    { type: 'pill', x: '5%', y: '15%', width: '180px', height: '80px', color: '#00ff88', opacity: 0.12, delay: 0 },
+    { type: 'pill', x: '25%', y: '12%', width: '220px', height: '90px', color: '#14b8a6', opacity: 0.1, delay: 0.2 },
+    { type: 'circle', x: '50%', y: '18%', width: '100px', height: '100px', color: '#22d3ee', opacity: 0.08, delay: 0.4 },
+    { type: 'pill', x: '70%', y: '10%', width: '200px', height: '85px', color: '#00ff88', opacity: 0.1, delay: 0.6 },
 
     // Middle row
-    { type: 'circle', x: '8%', y: '45%', width: '120px', height: '120px', color: '#14b8a6', opacity: 0.18, delay: 0.3 },
-    { type: 'pill', x: '30%', y: '50%', width: '250px', height: '100px', color: '#22d3ee', opacity: 0.15, delay: 0.5 },
-    { type: 'pill', x: '60%', y: '48%', width: '200px', height: '80px', color: '#00ff88', opacity: 0.18, delay: 0.7 },
-    { type: 'circle', x: '85%', y: '42%', width: '140px', height: '140px', color: '#14b8a6', opacity: 0.2, delay: 0.1 },
+    { type: 'circle', x: '8%', y: '45%', width: '120px', height: '120px', color: '#14b8a6', opacity: 0.08, delay: 0.3 },
+    { type: 'pill', x: '30%', y: '50%', width: '250px', height: '100px', color: '#22d3ee', opacity: 0.06, delay: 0.5 },
+    { type: 'pill', x: '60%', y: '48%', width: '200px', height: '80px', color: '#00ff88', opacity: 0.08, delay: 0.7 },
+    { type: 'circle', x: '85%', y: '42%', width: '140px', height: '140px', color: '#14b8a6', opacity: 0.1, delay: 0.1 },
 
     // Bottom row
-    { type: 'pill', x: '10%', y: '78%', width: '200px', height: '90px', color: '#22d3ee', opacity: 0.18, delay: 0.4 },
-    { type: 'circle', x: '35%', y: '82%', width: '110px', height: '110px', color: '#00ff88', opacity: 0.2, delay: 0.6 },
-    { type: 'pill', x: '55%', y: '75%', width: '240px', height: '95px', color: '#14b8a6', opacity: 0.15, delay: 0.2 },
-    { type: 'pill', x: '80%', y: '80%', width: '180px', height: '75px', color: '#22d3ee', opacity: 0.18, delay: 0.8 },
+    { type: 'pill', x: '10%', y: '78%', width: '200px', height: '90px', color: '#22d3ee', opacity: 0.08, delay: 0.4 },
+    { type: 'circle', x: '35%', y: '82%', width: '110px', height: '110px', color: '#00ff88', opacity: 0.1, delay: 0.6 },
+    { type: 'pill', x: '55%', y: '75%', width: '240px', height: '95px', color: '#14b8a6', opacity: 0.06, delay: 0.2 },
+    { type: 'pill', x: '80%', y: '80%', width: '180px', height: '75px', color: '#22d3ee', opacity: 0.08, delay: 0.8 },
   ];
 
   return (

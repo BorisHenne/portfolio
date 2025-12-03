@@ -1,4 +1,4 @@
-import { memo, useRef, useState, useEffect } from 'react';
+import { memo, useRef, useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import {
@@ -17,10 +17,12 @@ import {
   Brain,
   Layout,
   Zap,
+  Sparkles,
   type LucideIcon,
 } from 'lucide-react';
 
 import { cn } from '../../utils';
+import { Spotlight } from '../ui/Spotlight';
 
 // Tab types
 type TabId = 'experience' | 'education' | 'skills';
@@ -113,24 +115,69 @@ function CareerComponent() {
   const { t } = useTranslation();
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const isScrolledIntoView = useInView(ref, { amount: 0.3 });
   const [activeTab, setActiveTab] = useState<TabId>('experience');
   const [showAllExp, setShowAllExp] = useState(false);
+  const [highlightedCategory, setHighlightedCategory] = useState<string | null>(null);
 
-  // Check for tab selection from About section (passions)
-  useEffect(() => {
+  // Check for tab selection from About section (passions) - triggers when scrolled into view
+  const checkSessionStorage = useCallback(() => {
     const storedTab = sessionStorage.getItem('careerTab');
+    const storedHighlight = sessionStorage.getItem('skillHighlight');
     if (storedTab === 'skills') {
       setActiveTab('skills');
+      if (storedHighlight) {
+        setHighlightedCategory(storedHighlight);
+        // Clear highlight after animation
+        setTimeout(() => setHighlightedCategory(null), 2000);
+      }
       sessionStorage.removeItem('careerTab');
       sessionStorage.removeItem('skillHighlight');
     }
   }, []);
 
+  // Check on mount
+  useEffect(() => {
+    checkSessionStorage();
+  }, [checkSessionStorage]);
+
+  // Also check whenever section scrolls into view (for navigation from other sections)
+  useEffect(() => {
+    if (isScrolledIntoView) {
+      checkSessionStorage();
+    }
+  }, [isScrolledIntoView, checkSessionStorage]);
+
   const visibleExperiences = showAllExp ? experiences : experiences.slice(0, 4);
 
   return (
-    <section ref={ref} id="career" className="py-16 sm:py-24 lg:py-32 relative">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={ref} id="career" className="py-16 sm:py-24 lg:py-32 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-dark-950/80" />
+      <Spotlight
+        className="-top-40 -left-20 md:left-20 md:-top-20"
+        fill="#00ff88"
+      />
+      <Spotlight
+        className="top-40 right-0 h-[60vh] w-[40vw]"
+        fill="#14b8a6"
+      />
+
+      {/* Animated gradient orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute -top-1/4 -right-1/4 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 8, repeat: Infinity }}
+        />
+        <motion.div
+          className="absolute -bottom-1/4 -left-1/4 w-96 h-96 bg-secondary-500/5 rounded-full blur-3xl"
+          animate={{ scale: [1.2, 1, 1.2], opacity: [0.5, 0.3, 0.5] }}
+          transition={{ duration: 8, repeat: Infinity }}
+        />
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -143,10 +190,14 @@ function CareerComponent() {
             {t('career.title')}
             <span className="text-primary-500"> /&gt;</span>
           </h2>
-          <div className="w-20 sm:w-28 h-1.5 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full" />
+          <motion.div
+            className="w-20 sm:w-28 h-1.5 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full"
+            animate={{ boxShadow: ['0 0 10px rgba(0,255,136,0.3)', '0 0 25px rgba(0,255,136,0.6)', '0 0 10px rgba(0,255,136,0.3)'] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
         </motion.div>
 
-        {/* Tabs - avec texte visible sur mobile */}
+        {/* Tabs - Ultra stylish with glow effects */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -157,19 +208,36 @@ function CareerComponent() {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
-              <button
+              <motion.button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
                 className={cn(
-                  'flex items-center gap-1.5 sm:gap-3 px-3 sm:px-8 py-2.5 sm:py-4 rounded-xl sm:rounded-2xl font-medium text-xs sm:text-lg transition-all duration-300 touch-manipulation',
+                  'relative flex items-center gap-1.5 sm:gap-3 px-4 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-medium text-xs sm:text-lg transition-all duration-300 touch-manipulation overflow-hidden',
                   isActive
-                    ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-dark-950 shadow-lg shadow-primary-500/30'
-                    : 'glass-card text-gray-400 hover:text-primary-400 hover:border-primary-500/40'
+                    ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-dark-950'
+                    : 'bg-dark-900/80 border border-dark-700/50 text-gray-400 hover:text-primary-400 hover:border-primary-500/40 backdrop-blur-sm'
                 )}
+                style={isActive ? {
+                  boxShadow: '0 0 30px rgba(0,255,136,0.5), 0 0 60px rgba(0,255,136,0.3), inset 0 0 20px rgba(255,255,255,0.1)'
+                } : undefined}
               >
-                <Icon size={18} className="sm:w-[22px] sm:h-[22px]" />
-                <span className="text-[11px] sm:text-lg">{t(`career.tabs.${tab.id}`)}</span>
-              </button>
+                {/* Animated background for active tab */}
+                {isActive && (
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-primary-400 to-secondary-400 opacity-20"
+                    animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                  />
+                )}
+                {/* Sparkle effect for active */}
+                {isActive && (
+                  <Sparkles className="absolute top-1 right-1 w-3 h-3 text-white/60 animate-pulse" />
+                )}
+                <Icon size={18} className={cn("sm:w-[22px] sm:h-[22px] relative z-10", isActive && "drop-shadow-sm")} />
+                <span className="text-[11px] sm:text-lg relative z-10 font-semibold">{t(`career.tabs.${tab.id}`)}</span>
+              </motion.button>
             );
           })}
         </motion.div>
@@ -380,52 +448,103 @@ function CareerComponent() {
               transition={{ duration: 0.3 }}
               className="grid md:grid-cols-2 gap-5 sm:gap-6"
             >
-              {skillCategories.map((category, catIndex) => (
-                <motion.div
-                  key={category.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: catIndex * 0.1 }}
-                  className="glass-card rounded-xl sm:rounded-2xl p-5 sm:p-6"
-                  style={{ borderColor: `${category.color}20` }}
-                >
-                  <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-5 font-display flex items-center gap-3">
-                    <div
-                      className="w-9 h-9 rounded-lg flex items-center justify-center"
-                      style={{ backgroundColor: `${category.color}15`, border: `1px solid ${category.color}40` }}
-                    >
-                      <category.icon size={20} style={{ color: category.color }} />
-                    </div>
-                    {t(`skills.categories.${category.id}`)}
-                  </h3>
+              {skillCategories.map((category, catIndex) => {
+                const isHighlighted = highlightedCategory === category.id;
+                return (
+                  <motion.div
+                    key={category.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                      scale: isHighlighted ? [1, 1.02, 1] : 1,
+                    }}
+                    transition={{
+                      delay: catIndex * 0.1,
+                      scale: { duration: 0.5, repeat: isHighlighted ? 2 : 0 }
+                    }}
+                    className={cn(
+                      "relative rounded-xl sm:rounded-2xl p-5 sm:p-6 overflow-hidden transition-all duration-500",
+                      "bg-dark-900/80 backdrop-blur-sm border",
+                      isHighlighted && "ring-2 ring-offset-2 ring-offset-dark-950"
+                    )}
+                    style={{
+                      borderColor: isHighlighted ? category.color : `${category.color}30`,
+                      boxShadow: isHighlighted
+                        ? `0 0 40px ${category.color}40, 0 0 80px ${category.color}20, inset 0 0 30px ${category.color}10`
+                        : `0 0 20px ${category.color}10`,
+                      ringColor: isHighlighted ? category.color : undefined
+                    }}
+                    whileHover={{
+                      scale: 1.02,
+                      boxShadow: `0 0 50px ${category.color}30, 0 0 100px ${category.color}15`
+                    }}
+                  >
+                    {/* Animated glow background */}
+                    <motion.div
+                      className="absolute inset-0 opacity-10"
+                      style={{ background: `radial-gradient(circle at 50% 0%, ${category.color}, transparent 70%)` }}
+                      animate={isHighlighted ? { opacity: [0.1, 0.3, 0.1] } : {}}
+                      transition={{ duration: 1, repeat: isHighlighted ? 3 : 0 }}
+                    />
 
-                  <div className="space-y-3 sm:space-y-4">
-                    {category.skills.map((skill, skillIndex) => (
-                      <div key={skill.name}>
-                        <div className="flex justify-between mb-1.5">
-                          <span className="text-gray-300 text-sm sm:text-base font-medium">
-                            {skill.name}
-                          </span>
-                          <span className="font-mono text-sm sm:text-base" style={{ color: category.color }}>
-                            {skill.level}%
-                          </span>
+                    <h3 className="relative z-10 text-lg sm:text-xl font-bold text-white mb-4 sm:mb-5 font-display flex items-center gap-3">
+                      <motion.div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center"
+                        style={{
+                          backgroundColor: `${category.color}20`,
+                          border: `2px solid ${category.color}60`,
+                          boxShadow: `0 0 15px ${category.color}30`
+                        }}
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        animate={isHighlighted ? { rotate: [0, -10, 10, 0] } : {}}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <category.icon size={22} style={{ color: category.color }} />
+                      </motion.div>
+                      <span className="drop-shadow-sm">{t(`skills.categories.${category.id}`)}</span>
+                    </h3>
+
+                    <div className="relative z-10 space-y-3 sm:space-y-4">
+                      {category.skills.map((skill, skillIndex) => (
+                        <div key={skill.name} className="group">
+                          <div className="flex justify-between mb-1.5">
+                            <span className="text-gray-300 text-sm sm:text-base font-medium group-hover:text-white transition-colors">
+                              {skill.name}
+                            </span>
+                            <motion.span
+                              className="font-mono text-sm sm:text-base font-semibold"
+                              style={{ color: category.color }}
+                              whileHover={{ scale: 1.1 }}
+                            >
+                              {skill.level}%
+                            </motion.span>
+                          </div>
+                          <div className="h-2.5 bg-dark-800/80 rounded-full overflow-hidden border border-dark-700/50">
+                            <motion.div
+                              className="h-full rounded-full relative overflow-hidden"
+                              style={{
+                                background: `linear-gradient(90deg, ${category.color}, ${category.color}cc)`,
+                                boxShadow: `0 0 10px ${category.color}50`
+                              }}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${skill.level}%` }}
+                              transition={{ delay: 0.3 + skillIndex * 0.1, duration: 0.8, ease: "easeOut" }}
+                            >
+                              {/* Shimmer effect */}
+                              <motion.div
+                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                                animate={{ x: ['-100%', '200%'] }}
+                                transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                              />
+                            </motion.div>
+                          </div>
                         </div>
-                        <div className="h-2 bg-dark-800 rounded-full overflow-hidden">
-                          <motion.div
-                            className="h-full rounded-full"
-                            style={{
-                              background: `linear-gradient(90deg, ${category.color}, ${category.color}99)`
-                            }}
-                            initial={{ width: 0 }}
-                            animate={{ width: `${skill.level}%` }}
-                            transition={{ delay: 0.3 + skillIndex * 0.1, duration: 0.8 }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
+                      ))}
+                    </div>
+                  </motion.div>
+                );
+              })}
             </motion.div>
           )}
         </AnimatePresence>
