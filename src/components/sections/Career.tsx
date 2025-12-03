@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from 'react';
+import { memo, useRef, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import {
@@ -13,6 +13,11 @@ import {
   Users,
   Puzzle,
   Infinity,
+  Database,
+  Brain,
+  Layout,
+  Zap,
+  type LucideIcon,
 } from 'lucide-react';
 
 import { cn } from '../../utils';
@@ -55,10 +60,11 @@ const mindsetValues = [
   { key: 'noLimits', icon: Infinity },
 ];
 
-// Skills data with colors matching passions
-const skillCategories = [
+// Skills data with colors and icons matching passions
+const skillCategories: { id: string; icon: LucideIcon; color: string; skills: { name: string; level: number }[] }[] = [
   {
     id: 'sap',
+    icon: Database,
     color: '#00ff88', // Primary green - matches dev passion
     skills: [
       { name: 'ABAP / ABAP-OO', level: 95 },
@@ -70,6 +76,7 @@ const skillCategories = [
   },
   {
     id: 'ai',
+    icon: Brain,
     color: '#a855f7', // Purple - matches AI passion
     skills: [
       { name: 'Claude / GPT', level: 92 },
@@ -80,6 +87,7 @@ const skillCategories = [
   },
   {
     id: 'frontend',
+    icon: Layout,
     color: '#18bcf2', // Cyan - matches domotics (tech)
     skills: [
       { name: 'React / TypeScript', level: 88 },
@@ -90,6 +98,7 @@ const skillCategories = [
   },
   {
     id: 'automation',
+    icon: Zap,
     color: '#fbbf24', // Yellow - matches automation passion
     skills: [
       { name: 'Make.com', level: 92 },
@@ -106,6 +115,16 @@ function CareerComponent() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const [activeTab, setActiveTab] = useState<TabId>('experience');
   const [showAllExp, setShowAllExp] = useState(false);
+
+  // Check for tab selection from About section (passions)
+  useEffect(() => {
+    const storedTab = sessionStorage.getItem('careerTab');
+    if (storedTab === 'skills') {
+      setActiveTab('skills');
+      sessionStorage.removeItem('careerTab');
+      sessionStorage.removeItem('skillHighlight');
+    }
+  }, []);
 
   const visibleExperiences = showAllExp ? experiences : experiences.slice(0, 4);
 
@@ -375,7 +394,7 @@ function CareerComponent() {
                       className="w-9 h-9 rounded-lg flex items-center justify-center"
                       style={{ backgroundColor: `${category.color}15`, border: `1px solid ${category.color}40` }}
                     >
-                      <Code2 size={20} style={{ color: category.color }} />
+                      <category.icon size={20} style={{ color: category.color }} />
                     </div>
                     {t(`skills.categories.${category.id}`)}
                   </h3>

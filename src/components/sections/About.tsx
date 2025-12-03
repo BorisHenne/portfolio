@@ -121,9 +121,10 @@ function AboutComponent() {
               {interests.map((interest, index) => {
                 const handleClick = () => {
                   if (interest.skillTab) {
-                    // Store the tab to activate in sessionStorage
-                    sessionStorage.setItem('skillTab', interest.skillTab);
-                    scrollToElement('skills');
+                    // Store the skill category to highlight and navigate to Career section's skills tab
+                    sessionStorage.setItem('careerTab', 'skills');
+                    sessionStorage.setItem('skillHighlight', interest.skillTab);
+                    scrollToElement('career');
                   }
                 };
 
