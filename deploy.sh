@@ -27,8 +27,8 @@ print_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 # Configuration
 INSTALL_DIR="/volume1/docker/site-perso"
-REPO_URL="https://github.com/BorisHenne/portfolio.git"
 BRANCH="${1:-main}"  # Argument optionnel, défaut: main
+TARBALL_URL="https://github.com/BorisHenne/portfolio/archive/refs/heads/${BRANCH}.tar.gz"
 GOOGLE_CLIENT_ID="${VITE_GOOGLE_CLIENT_ID:-}"
 
 echo ""
@@ -66,14 +66,14 @@ if [ -f "$INSTALL_DIR/.env" ]; then
     print_success "Fichier .env sauvegardé"
 fi
 
-# 3. Récupérer le code via Git (suppression complète + clone frais)
-print_step "Récupération du code source via Git..."
+# 3. Récupérer le code via curl (suppression complète + téléchargement frais)
+print_step "Téléchargement du code source..."
 cd /tmp
 rm -rf "$INSTALL_DIR"
 mkdir -p "$INSTALL_DIR"
-git clone --branch "$BRANCH" --single-branch "$REPO_URL" "$INSTALL_DIR"
+curl -fsSL "$TARBALL_URL" | tar -xz --strip-components=1 -C "$INSTALL_DIR"
 cd "$INSTALL_DIR"
-print_success "Code cloné depuis GitHub (branche: $BRANCH)"
+print_success "Code téléchargé depuis GitHub (branche: $BRANCH)"
 
 # 4. Restaurer les données
 print_step "Restauration des données..."
