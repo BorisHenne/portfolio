@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
@@ -12,13 +12,9 @@ import {
 } from 'lucide-react';
 
 import { scrollToElement, downloadFile } from '../../utils';
-import { Spotlight } from '../ui/Spotlight';
 import { TextGenerateEffect } from '../ui/TextGenerateEffect';
 import { FlipWords } from '../ui/FlipWords';
 import { SparklesCore } from '../ui/SparklesCore';
-import { FloatingShapes } from '../ui/FloatingShapes';
-import { BackgroundBeams } from '../ui/BackgroundBeams';
-import { Button as MovingBorderButton } from '../ui/MovingBorder';
 
 const techTags = [
   'SAP', 'ABAP', 'Fiori', 'Claude', 'GPT', 'React',
@@ -34,6 +30,15 @@ const flipRoles = [
 
 function HeroComponent() {
   const { t, i18n } = useTranslation();
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile for performance optimization
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleContactClick = () => {
     scrollToElement('contact');
@@ -48,71 +53,57 @@ function HeroComponent() {
       id="home"
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark-950"
     >
-      {/* Ultra dark base */}
+      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-900 to-dark-950" />
 
-      {/* Aceternity Spotlight Effects */}
-      <Spotlight
-        className="-top-40 left-0 md:left-60 md:-top-20"
-        fill="#00ff88"
-      />
-      <Spotlight
-        className="top-20 left-full -translate-x-[60%] h-[80vh] w-[50vw]"
-        fill="#14b8a6"
-      />
-      <Spotlight
-        className="top-1/2 -left-20 h-[60vh] w-[40vw]"
-        fill="#22d3ee"
-      />
-
-      {/* Floating Geometric Shapes - Horizontal arrangement */}
-      <FloatingShapes className="z-0" />
+      {/* Subtle gradient orbs - CSS only, no animation on mobile */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div
+          className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full opacity-20"
+          style={{ background: 'radial-gradient(circle, #00ff88 0%, transparent 70%)', filter: 'blur(80px)' }}
+        />
+        <div
+          className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full opacity-15"
+          style={{ background: 'radial-gradient(circle, #14b8a6 0%, transparent 70%)', filter: 'blur(80px)' }}
+        />
+      </div>
 
       {/* Background grid pattern */}
       <div className="absolute inset-0 w-full h-full bg-dark-950 bg-grid-white/[0.02] pointer-events-none" />
-
-      {/* Radial gradient overlay for depth */}
-      <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-dark-950 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
-
-      {/* Background Beams */}
-      <BackgroundBeams className="opacity-50" />
 
       {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
 
-          {/* Profile Image with Sparkles */}
+          {/* Profile Image */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 0.5 }}
             className="relative flex-shrink-0"
           >
             <div className="relative w-40 h-40 sm:w-56 sm:h-56 lg:w-72 lg:h-72">
-              {/* Animated ring */}
-              <motion.div
-                className="absolute inset-0 rounded-full"
-                style={{
-                  background: 'conic-gradient(from 0deg, #00ff88, #14b8a6, #22d3ee, #00ff88)',
-                  padding: '3px',
-                }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              {/* Ring border */}
+              <div
+                className="absolute inset-0 rounded-full p-[3px]"
+                style={{ background: 'linear-gradient(135deg, #00ff88, #14b8a6, #22d3ee)' }}
               >
                 <div className="w-full h-full rounded-full bg-dark-900" />
-              </motion.div>
-
-              {/* Sparkles around image */}
-              <div className="absolute inset-[-20%] z-0">
-                <SparklesCore
-                  className="w-full h-full"
-                  particleColor="#00ff88"
-                  particleDensity={40}
-                  minSize={0.4}
-                  maxSize={1.2}
-                  speed={0.5}
-                />
               </div>
+
+              {/* Sparkles - desktop only */}
+              {!isMobile && (
+                <div className="absolute inset-[-20%] z-0">
+                  <SparklesCore
+                    className="w-full h-full"
+                    particleColor="#00ff88"
+                    particleDensity={30}
+                    minSize={0.4}
+                    maxSize={1}
+                    speed={0.3}
+                  />
+                </div>
+              )}
 
               {/* Image container */}
               <div className="absolute inset-2 sm:inset-3 rounded-full overflow-hidden border-2 border-dark-700 z-10">
@@ -128,17 +119,17 @@ function HeroComponent() {
                 />
               </div>
 
-              {/* Status badge - Busy/Under contract */}
+              {/* Status badge */}
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ delay: 0.5, type: 'spring' }}
+                transition={{ delay: 0.3, type: 'spring' }}
                 className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 z-20"
               >
-                <div className="px-3 py-1.5 rounded-full bg-dark-800/95 backdrop-blur-sm border border-red-500/40 shadow-lg shadow-red-500/20">
-                  <span className="flex items-center gap-1.5 text-xs font-semibold">
-                    <span className="w-2 h-2 rounded-full bg-red-500 shadow-sm shadow-red-500" />
-                    <span className="text-red-400 uppercase tracking-wide">{t('hero.status')}</span>
+                <div className="px-2.5 py-1 rounded-full bg-dark-800/95 backdrop-blur-sm border border-red-500/30">
+                  <span className="flex items-center gap-1.5 text-xs font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                    <span className="text-red-400 uppercase tracking-wide text-[10px]">{t('hero.status')}</span>
                   </span>
                 </div>
               </motion.div>
@@ -215,25 +206,23 @@ function HeroComponent() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9 }}
-              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8"
+              transition={{ delay: 0.6 }}
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-8"
             >
-              <MovingBorderButton
-                borderRadius="1.5rem"
-                className="px-8 py-4 text-white font-semibold"
+              <button
                 onClick={handleContactClick}
-                as="button"
+                className="flex items-center gap-2 px-6 py-3 rounded-lg bg-primary-500 text-dark-950 font-semibold hover:bg-primary-400 transition-colors"
               >
-                <Mail className="w-5 h-5 mr-2" />
+                <Mail size={18} />
                 {t('hero.cta')}
-              </MovingBorderButton>
+              </button>
 
               <button
                 onClick={handleCVDownload}
-                className="group flex items-center gap-2 px-8 py-4 rounded-full bg-dark-800/50 border border-gray-700/50 text-gray-300 hover:text-white hover:border-primary-500/50 hover:bg-primary-500/10 transition-all duration-300"
+                className="flex items-center gap-2 px-6 py-3 rounded-lg bg-dark-800/60 border border-dark-700/50 text-gray-300 hover:text-white hover:border-dark-600 transition-colors"
               >
-                <Download size={20} className="group-hover:animate-bounce" />
-                <span className="font-semibold">{t('hero.cv')}</span>
+                <Download size={18} />
+                {t('hero.cv')}
               </button>
             </motion.div>
 
@@ -241,26 +230,26 @@ function HeroComponent() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-              className="flex items-center justify-center lg:justify-start gap-3 mb-8"
+              transition={{ delay: 0.7 }}
+              className="flex items-center justify-center lg:justify-start gap-2 mb-6"
             >
               <a
                 href="https://www.linkedin.com/in/borishenne/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group p-3 rounded-xl bg-dark-800/60 border border-gray-700/40 text-gray-400 hover:text-[#0077b5] hover:border-[#0077b5]/40 hover:bg-[#0077b5]/10 transition-all duration-300"
+                className="p-2.5 rounded-lg bg-dark-800/60 border border-dark-700/50 text-gray-400 hover:text-[#0077b5] hover:border-[#0077b5]/30 transition-colors"
                 aria-label="LinkedIn"
               >
-                <Linkedin size={22} />
+                <Linkedin size={20} />
               </a>
               <a
                 href="https://github.com/BorisHenne"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group p-3 rounded-xl bg-dark-800/60 border border-gray-700/40 text-gray-400 hover:text-white hover:border-gray-500/40 hover:bg-gray-500/10 transition-all duration-300"
+                className="p-2.5 rounded-lg bg-dark-800/60 border border-dark-700/50 text-gray-400 hover:text-white hover:border-dark-600 transition-colors"
                 aria-label="GitHub"
               >
-                <Github size={22} />
+                <Github size={20} />
               </a>
             </motion.div>
 
@@ -268,20 +257,16 @@ function HeroComponent() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1.1 }}
-              className="flex flex-wrap justify-center lg:justify-start gap-2"
+              transition={{ delay: 0.8 }}
+              className="flex flex-wrap justify-center lg:justify-start gap-1.5"
             >
-              {techTags.map((tag, index) => (
-                <motion.span
+              {techTags.map((tag) => (
+                <span
                   key={tag}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1.2 + index * 0.05 }}
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  className="px-3 py-1.5 rounded-full text-xs font-mono bg-primary-500/10 text-primary-400 border border-primary-500/20 hover:bg-primary-500/20 hover:border-primary-500/40 transition-all duration-200 cursor-default"
+                  className="px-2.5 py-1 rounded-md text-xs font-mono bg-dark-800/60 text-gray-400 border border-dark-700/50"
                 >
                   {tag}
-                </motion.span>
+                </span>
               ))}
             </motion.div>
           </div>
@@ -289,21 +274,13 @@ function HeroComponent() {
       </div>
 
       {/* Scroll Indicator */}
-      <motion.button
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.5 }}
+      <button
         onClick={() => scrollToElement('about')}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-gray-500 hover:text-primary-400 transition-colors p-2 group"
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 text-gray-600 hover:text-primary-400 transition-colors p-2"
         aria-label="Scroll to content"
       >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        >
-          <ChevronDown size={32} className="group-hover:text-primary-400" />
-        </motion.div>
-      </motion.button>
+        <ChevronDown size={28} className="animate-bounce" />
+      </button>
     </section>
   );
 }

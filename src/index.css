@@ -25,6 +25,8 @@
 
   html {
     scroll-behavior: smooth;
+    /* iOS safe area support */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 
   body {
@@ -559,6 +561,20 @@
 
   .section-title {
     @apply text-4xl sm:text-5xl;
+  }
+}
+
+/* ========================================
+   UTILITIES
+   ======================================== */
+@layer utilities {
+  /* Safe area padding for iOS PWA */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
 
