@@ -225,69 +225,121 @@ function NavbarComponent() {
         <AnimatePresence>
           {isMenuOpen && (
             <>
-              {/* Backdrop */}
+              {/* Backdrop with blur */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 lg:hidden"
-                style={{ backgroundColor: '#0a0f0d', zIndex: 9998 }}
+                className="fixed inset-0 lg:hidden backdrop-blur-xl"
+                style={{ backgroundColor: 'rgba(10, 15, 13, 0.95)', zIndex: 9998 }}
                 onClick={closeMenu}
               />
 
-              {/* Menu panel */}
+              {/* Full screen menu */}
               <motion.div
-                initial={{ x: '100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '100%' }}
-                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="fixed top-0 right-0 bottom-0 w-full max-w-sm shadow-2xl lg:hidden"
-                style={{ backgroundColor: '#151816', zIndex: 9999 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 lg:hidden flex flex-col items-center justify-center"
+                style={{ zIndex: 9999 }}
               >
-                <div className="flex flex-col h-full pt-20 pb-8 px-6">
-                  <div className="flex flex-col gap-2">
+                {/* Close button */}
+                <motion.button
+                  initial={{ opacity: 0, rotate: -90 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  exit={{ opacity: 0, rotate: 90 }}
+                  transition={{ delay: 0.1 }}
+                  onClick={closeMenu}
+                  className="absolute top-4 right-4 p-3 rounded-full bg-dark-800/50 border border-gray-700/50 text-gray-400 hover:text-white hover:border-primary-500/30 transition-all"
+                >
+                  <X size={24} />
+                </motion.button>
+
+                {/* Logo */}
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="mb-8"
+                >
+                  <span className="font-display font-bold text-3xl text-white">
+                    <span className="text-primary-500">&lt;</span>
+                    BH
+                    <span className="text-primary-500">/&gt;</span>
+                  </span>
+                </motion.div>
+
+                {/* Nav container - pill style like desktop */}
+                <motion.nav
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.15 }}
+                  className="px-3 py-3 rounded-3xl bg-dark-900/80 border border-primary-500/10 shadow-lg shadow-primary-500/5"
+                >
+                  <div className="flex flex-col gap-1">
                     {NAV_ITEMS.map((item, index) => {
                       const Icon = item.icon;
                       return (
                         <motion.button
                           key={item.id}
-                          initial={{ opacity: 0, x: 20 }}
+                          initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.05 }}
+                          transition={{ delay: 0.2 + index * 0.05 }}
                           onClick={() => handleNavClick(item.id)}
                           className={cn(
-                            'w-full text-left px-4 py-3 rounded-xl font-medium transition-all flex items-center gap-3',
+                            'relative px-6 py-3 rounded-2xl font-medium text-base transition-all duration-200 min-w-[200px]',
                             activeSection === item.id
-                              ? 'text-primary-400 bg-primary-500/10'
-                              : 'text-gray-300 hover:text-white hover:bg-white/5'
+                              ? 'text-white'
+                              : 'text-gray-400'
                           )}
                         >
-                          <Icon size={20} />
-                          {t(`nav.${item.id}`)}
+                          {activeSection === item.id && (
+                            <motion.div
+                              layoutId="mobile-nav-active"
+                              className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary-500/20 to-secondary-500/20 border border-primary-500/30"
+                              transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                            />
+                          )}
+                          <span className="relative z-10 flex items-center gap-3">
+                            <Icon size={20} />
+                            {t(`nav.${item.id}`)}
+                          </span>
                         </motion.button>
                       );
                     })}
                   </div>
+                </motion.nav>
+
+                {/* Bottom actions */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="mt-8 flex items-center gap-3"
+                >
+                  {/* Language toggle */}
+                  <button
+                    onClick={toggleLanguage}
+                    className="flex items-center gap-2 px-5 py-3 rounded-full bg-dark-800/50 border border-gray-700/50 text-gray-400 hover:text-primary-400 hover:border-primary-500/30 transition-all"
+                  >
+                    <Globe size={18} />
+                    <span className="text-sm font-medium">
+                      {language === 'fr' ? 'English' : 'Français'}
+                    </span>
+                  </button>
 
                   {/* Admin indicator */}
                   {isAuthenticated && (
-                    <div className="mt-4 flex items-center gap-2 px-4 py-3 rounded-xl bg-primary-500/10 text-primary-400">
+                    <div className="flex items-center gap-2 px-5 py-3 rounded-full bg-primary-500/10 border border-primary-500/30 text-primary-400">
                       <Shield size={18} />
-                      <span>Mode Admin activé</span>
+                      <span className="text-sm font-medium">Admin</span>
                     </div>
                   )}
+                </motion.div>
 
-                  {/* Language switch in mobile */}
-                  <div className="mt-auto pt-8 border-t border-gray-800">
-                    <button
-                      onClick={toggleLanguage}
-                      className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all"
-                    >
-                      <Globe size={20} />
-                      <span>{language === 'fr' ? 'Switch to English' : 'Passer en Français'}</span>
-                    </button>
-                  </div>
-                </div>
+                {/* Decorative elements */}
+                <div className="absolute top-1/4 left-10 w-32 h-32 bg-primary-500/5 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-1/4 right-10 w-40 h-40 bg-secondary-500/5 rounded-full blur-3xl pointer-events-none" />
               </motion.div>
             </>
           )}
