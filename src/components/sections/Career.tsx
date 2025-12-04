@@ -21,15 +21,10 @@ import {
 } from 'lucide-react';
 
 import { cn } from '../../utils';
+import { GlowingTabs } from '../ui/AnimatedTabs';
 
 // Tab types
 type TabId = 'experience' | 'education' | 'skills';
-
-const tabs: { id: TabId; icon: typeof Briefcase }[] = [
-  { id: 'experience', icon: Briefcase },
-  { id: 'education', icon: GraduationCap },
-  { id: 'skills', icon: Code2 },
-];
 
 // Experience data
 const experiences = [
@@ -169,34 +164,22 @@ function CareerComponent() {
           <div className="w-16 sm:w-20 h-1 bg-primary-500 mx-auto rounded-full" />
         </motion.div>
 
-        {/* Tabs */}
+        {/* Tabs with GlowingTabs effect */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.2 }}
-          className="flex justify-center gap-2 sm:gap-3 mb-8 sm:mb-12"
+          className="mb-8 sm:mb-12"
         >
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <motion.button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className={cn(
-                  'flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium text-xs sm:text-base transition-all duration-200',
-                  isActive
-                    ? 'bg-primary-500 text-dark-950'
-                    : 'bg-dark-800/60 border border-dark-700/50 text-gray-400 hover:text-white hover:border-dark-600'
-                )}
-              >
-                <Icon size={16} className="sm:w-[18px] sm:h-[18px]" />
-                <span>{t(`career.tabs.${tab.id}`)}</span>
-              </motion.button>
-            );
-          })}
+          <GlowingTabs
+            tabs={[
+              { id: 'experience', label: t('career.tabs.experience'), icon: <Briefcase size={16} />, color: '#00ff88' },
+              { id: 'education', label: t('career.tabs.education'), icon: <GraduationCap size={16} />, color: '#14b8a6' },
+              { id: 'skills', label: t('career.tabs.skills'), icon: <Code2 size={16} />, color: '#22d3ee' },
+            ]}
+            activeTab={activeTab}
+            onTabChange={(id) => setActiveTab(id as TabId)}
+          />
         </motion.div>
 
         {/* Content */}

@@ -15,6 +15,8 @@ import { scrollToElement, downloadFile } from '../../utils';
 import { TextGenerateEffect } from '../ui/TextGenerateEffect';
 import { FlipWords } from '../ui/FlipWords';
 import { SparklesCore } from '../ui/SparklesCore';
+import { Spotlight } from '../ui/Spotlight';
+import { Button as MovingBorderButton } from '../ui/MovingBorder';
 
 const techTags = [
   'SAP', 'ABAP', 'Fiori', 'Claude', 'GPT', 'React',
@@ -70,6 +72,14 @@ function HeroComponent() {
 
       {/* Background grid pattern */}
       <div className="absolute inset-0 w-full h-full bg-dark-950 bg-grid-white/[0.02] pointer-events-none" />
+
+      {/* Spotlight effect - desktop only */}
+      {!isMobile && (
+        <Spotlight
+          className="-top-40 left-0 md:left-60 md:-top-20"
+          fill="#00ff88"
+        />
+      )}
 
       {/* Main Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -209,13 +219,27 @@ function HeroComponent() {
               transition={{ delay: 0.6 }}
               className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-8"
             >
-              <button
-                onClick={handleContactClick}
-                className="flex items-center gap-2 px-6 py-3 rounded-lg bg-primary-500 text-dark-950 font-semibold hover:bg-primary-400 transition-colors"
-              >
-                <Mail size={18} />
-                {t('hero.cta')}
-              </button>
+              {/* MovingBorder button on desktop, simple button on mobile */}
+              {!isMobile ? (
+                <MovingBorderButton
+                  onClick={handleContactClick}
+                  borderRadius="0.5rem"
+                  containerClassName="h-auto w-auto"
+                  className="flex items-center gap-2 px-6 py-3 bg-primary-500/10 text-primary-400 font-semibold hover:bg-primary-500/20 transition-colors"
+                  duration={3}
+                >
+                  <Mail size={18} />
+                  {t('hero.cta')}
+                </MovingBorderButton>
+              ) : (
+                <button
+                  onClick={handleContactClick}
+                  className="flex items-center gap-2 px-6 py-3 rounded-lg bg-primary-500 text-dark-950 font-semibold hover:bg-primary-400 transition-colors"
+                >
+                  <Mail size={18} />
+                  {t('hero.cta')}
+                </button>
+              )}
 
               <button
                 onClick={handleCVDownload}

@@ -1,4 +1,4 @@
-import { memo, useRef, useEffect } from 'react';
+import { memo, useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, useInView } from 'framer-motion';
 import {
@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 
 import { scrollToElement } from '../../utils';
+import { CardContainer, CardBody, CardItem } from '../ui/Card3D';
 
 // Colors correlated with skills categories - with link to skill tab
 const interests = [
@@ -41,6 +42,15 @@ function AboutComponent() {
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const isVideoInView = useInView(videoContainerRef, { amount: 0.6 });
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile for performance optimization
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Autoplay video when in view with 20% volume
   useEffect(() => {
@@ -101,11 +111,28 @@ function AboutComponent() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.4 + index * 0.1 }}
-                  className="glass-card rounded-xl p-3 sm:p-5 text-center"
                 >
-                  <stat.icon className="w-5 h-5 sm:w-7 sm:h-7 mx-auto mb-2 text-primary-500" />
-                  <div className="text-xl sm:text-3xl font-bold text-white">{stat.value}</div>
-                  <div className="text-xs sm:text-sm text-gray-500">{t(`about.${stat.key}`)}</div>
+                  {!isMobile ? (
+                    <CardContainer containerClassName="w-full">
+                      <CardBody className="w-full h-auto glass-card rounded-xl p-3 sm:p-5 text-center group/card">
+                        <CardItem translateZ={30} className="w-full">
+                          <stat.icon className="w-5 h-5 sm:w-7 sm:h-7 mx-auto mb-2 text-primary-500" />
+                        </CardItem>
+                        <CardItem translateZ={50} className="w-full">
+                          <div className="text-xl sm:text-3xl font-bold text-white">{stat.value}</div>
+                        </CardItem>
+                        <CardItem translateZ={20} className="w-full">
+                          <div className="text-xs sm:text-sm text-gray-500">{t(`about.${stat.key}`)}</div>
+                        </CardItem>
+                      </CardBody>
+                    </CardContainer>
+                  ) : (
+                    <div className="glass-card rounded-xl p-3 sm:p-5 text-center">
+                      <stat.icon className="w-5 h-5 sm:w-7 sm:h-7 mx-auto mb-2 text-primary-500" />
+                      <div className="text-xl sm:text-3xl font-bold text-white">{stat.value}</div>
+                      <div className="text-xs sm:text-sm text-gray-500">{t(`about.${stat.key}`)}</div>
+                    </div>
+                  )}
                 </motion.div>
               ))}
             </div>
